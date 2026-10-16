@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="pt-BR" data-mode="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pierre Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: coluna documental com navegação lateral; espécimes usam os tokens reais do app (THEME_TOKENS). */
+:root {
+  --foreground:#fafafa; --muted-foreground:rgb(161,161,170); --background:#09090b; --card:#09090b;
+  --muted:#27272a; --border:#27272a; --border-prominent:#525259; --primary:#fafafa; --primary-foreground:#18181b;
+  --destructive:#ff4d4d; --foreground-disabled:#52525b; --surface:#18181b; --surface-hover:#27272a; --surface-pressed:#3f3f46;
+  --border-strong:#52525b; --border-muted:#18181b; --warning:#f59e0b; --warning-subtle:#451a03; --warning-border:#92400e;
+  --success:#cfff04; --success-subtle:#243400; --success-border:#536d07; --success-foreground:#243400;
+  --brand:#cfff04; --pierre:#c7ff00; --pierre-foreground:#09090b; --neon-lime-50:#fdffe4;
+  --destructive-subtle:#450a0a; --destructive-border:#991b1b;
+  --tab-inactive:rgba(255,255,255,0.63); --glass-border:rgba(255,255,255,0.18); --overlay:rgba(0,0,0,0.6);
+  --font:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"Geist Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  color-scheme:dark;
+}
+html[data-mode="light"] {
+  --foreground:#09090b; --muted-foreground:rgb(113,113,122); --background:#fafafa; --card:#ffffff;
+  --muted:#f4f4f5; --border:#e4e4e7; --border-prominent:#51515a; --primary:#18181b; --primary-foreground:#fafafa;
+  --destructive:#dc2626; --foreground-disabled:#a1a1aa; --surface:#f4f4f5; --surface-hover:#e4e4e7; --surface-pressed:#d4d4d8;
+  --border-strong:#d4d4d8; --border-muted:#f4f4f5; --warning:#d97706; --warning-subtle:#fffbeb; --warning-border:#fde68a;
+  --success:#4d7c0f; --success-subtle:#ecfccb; --success-border:#84cc16; --success-foreground:#09090b;
+  --brand:#8bb800; --destructive-subtle:#fef2f2; --destructive-border:#fecaca;
+  --tab-inactive:rgba(30,30,40,0.69); --glass-border:rgba(0,0,0,0.12); --overlay:rgba(0,0,0,0.4);
+  color-scheme:light;
+}
+* { box-sizing:border-box }
+body { margin:0; background:var(--background); color:var(--foreground); font:400 15px/1.55 var(--font); -webkit-font-smoothing:antialiased }
+a { color:inherit }
+code, .mono { font-family:var(--mono); font-size:.86em }
+.wrap { display:grid; grid-template-columns:220px minmax(0,1fr); max-width:1280px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); gap:40px }
+nav { position:sticky; top:0; align-self:start; padding-block:32px; max-height:100vh; overflow:auto }
+nav .logo { display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px; letter-spacing:-.4px; margin-bottom:6px }
+nav .logo i { width:22px; height:22px; border-radius:7px; background:var(--brand); display:block }
+nav small { color:var(--muted-foreground); display:block; margin-bottom:24px; font-size:12px }
+nav ol { list-style:none; margin:0; padding:0; display:grid; gap:2px }
+nav a { display:block; text-decoration:none; color:var(--muted-foreground); padding:6px 10px; border-radius:10px; font-size:14px }
+nav a:hover { background:var(--surface); color:var(--foreground) }
+main { padding-block:32px 96px; min-width:0 }
+header.hero { padding-bottom:36px; border-bottom:1px solid var(--border); margin-bottom:8px }
+header.hero .eyebrow { font:500 12px var(--mono); color:var(--brand); letter-spacing:.08em; text-transform:uppercase }
+header.hero h1 { font-size:clamp(36px,6vw,56px); line-height:1.02; letter-spacing:-.04em; font-weight:600; margin:10px 0 14px; text-wrap:balance }
+header.hero p { max-width:66ch; color:var(--muted-foreground); margin:0 0 18px }
+.meta { display:flex; flex-wrap:wrap; gap:8px }
+.pill { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); border-radius:999px; padding:4px 11px; font-size:12.5px; color:var(--muted-foreground) }
+.pill b { color:var(--foreground); font-weight:500 }
+section { padding-block:44px 8px; border-bottom:1px solid var(--border) }
+section > h2 { font-size:28px; letter-spacing:-.03em; font-weight:600; margin:0 0 6px; text-wrap:balance }
+section > p.lead { color:var(--muted-foreground); max-width:70ch; margin:0 0 26px }
+h3 { font-size:15px; font-weight:600; margin:30px 0 12px; letter-spacing:-.01em }
+.note { font-size:13px; color:var(--muted-foreground); border-left:2px solid var(--border-strong); padding:2px 0 2px 12px; max-width:72ch; margin:14px 0 }
+.tag-o, .tag-i { font:500 10.5px var(--mono); padding:1px 6px; border-radius:6px; vertical-align:1px }
+.tag-o { background:var(--success-subtle); color:var(--brand) }
+.tag-i { background:var(--warning-subtle); color:var(--warning) }
+.toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 20px }
+.seg { display:inline-flex; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:3px; gap:2px }
+.seg button { font:500 13px var(--font); border:0; background:transparent; color:var(--muted-foreground); height:32px; padding:0 14px; border-radius:16px; cursor:pointer }
+.seg button[aria-pressed="true"] { background:var(--foreground); color:var(--background) }
+button:focus-visible, a:focus-visible { outline:2px solid var(--brand); outline-offset:2px }
+
+/* tabelas */
+.tbl { overflow-x:auto; border:1px solid var(--border); border-radius:14px; margin:8px 0 18px }
+table { border-collapse:collapse; width:100%; font-size:13.5px }
+th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top }
+th { font-weight:500; color:var(--muted-foreground); font-size:12px; background:var(--surface); white-space:nowrap }
+tr:last-child td { border-bottom:0 }
+td.num, th.num { font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap }
+
+/* swatches */
+.swatches { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px }
+.sw { border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--card) }
+.sw .chip { height:64px; border-bottom:1px solid var(--border) }
+.sw .lbl { padding:8px 10px; font-size:12.5px; display:grid; gap:1px; min-width:0 }
+.sw .lbl b { font-weight:500; overflow-wrap:anywhere }
+.sw .lbl span { font:400 11.5px var(--mono); color:var(--muted-foreground) }
+.dots { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:6px 14px }
+.dot { display:flex; align-items:center; gap:10px; font-size:13px; padding:5px 0; min-width:0 }
+.dot i { width:22px; height:22px; border-radius:7px; flex:none; border:1px solid var(--border) }
+.dot span { color:var(--muted-foreground); font:11.5px var(--mono); margin-left:auto }
+.grads { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px }
+.grad { border-radius:14px; height:96px; border:1px solid var(--border); display:flex; align-items:flex-end; padding:10px 12px; font:500 12px var(--mono); color:#fafafa }
+
+/* tipografia */
+.typerow { display:grid; grid-template-columns:150px minmax(0,1fr); gap:16px; align-items:baseline; padding:12px 0; border-bottom:1px dashed var(--border) }
+.typerow .k { font:12px var(--mono); color:var(--muted-foreground) }
+.typerow .k b { display:block; color:var(--foreground); font-weight:500 }
+.weights { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:22px }
+
+/* raios */
+.radii { display:flex; flex-wrap:wrap; gap:14px }
+.rad { width:96px; display:grid; gap:6px; font-size:12px; color:var(--muted-foreground); text-align:center }
+.rad i { display:block; height:72px; background:var(--surface); border:1px solid var(--border-strong) }
+
+/* componentes */
+.specimen { border:1px solid var(--border); border-radius:21px; padding:22px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; background:var(--background) }
+.btn { font-family:var(--font); font-weight:500; border:0; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; gap:10.5px; cursor:pointer; transition:transform .18s cubic-bezier(.3,1.6,.5,1) }
+.btn:active { transform:scale(.96) }
+.btn.primary { background:var(--primary); color:var(--primary-foreground) }
+.btn.secondary { background:var(--surface); color:var(--foreground) }
+.btn.outline { background:transparent; color:var(--foreground); box-shadow:inset 0 0 0 1px var(--muted-foreground) }
+.btn.ghost { background:transparent; color:var(--foreground) }
+.btn.destructive { background:var(--destructive); color:#fff }
+.btn.pierre { background:var(--pierre); color:#09090b }
+.btn.glass { background:rgba(255,255,255,.08); color:var(--foreground); box-shadow:inset 0 0 0 1px var(--glass-border); backdrop-filter:blur(20px) }
+.btn.disabled { opacity:.6; cursor:not-allowed }
+.btn.mini { padding:7px 10.5px; font-size:16px }
+.btn.small { padding:7px 10.5px; font-size:14px; line-height:21px }
+.btn.regular { padding:10.5px 14px; font-size:14px; line-height:21px }
+.btn.large { padding:14px 21px; font-size:14px; line-height:21px }
+.btn.xlarge { padding:17.5px 28px; font-size:15.75px; line-height:24.5px; font-weight:600 }
+.ico { width:1.15em; height:1.15em; flex:none }
+.iconbtn { width:40px; height:40px; border-radius:20px; display:inline-grid; place-items:center; background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px var(--glass-border); color:var(--foreground); border:0; cursor:pointer }
+.field { position:relative; width:min(320px,100%) }
+.field .box { height:56px; border:1px solid var(--border); border-radius:14px; background:var(--background); display:flex; align-items:center; padding:14px; font-weight:500 }
+.field label { position:absolute; left:14px; top:-10px; font-size:12px; line-height:20px; background:var(--background); padding:0 3.5px; color:var(--muted-foreground) }
+.field.focus .box { border-color:var(--foreground) } .field.focus label { color:var(--foreground) }
+.field.error .box { border-color:var(--destructive) } .field.error label, .field .help.err { color:var(--destructive) }
+.field .help { font-size:13px; margin-top:7px; color:var(--muted-foreground) }
+.switch { width:44px; height:24px; border-radius:12px; padding:2px; background:#3f3f46; border:0; cursor:pointer; position:relative; transition:background .2s }
+.switch::after { content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 2px 3.84px rgba(0,0,0,.25); transition:transform .28s cubic-bezier(.3,1.5,.5,1) }
+.switch[aria-checked="true"] { background:var(--pierre) } .switch[aria-checked="true"]::after { transform:translateX(20px) }
+.switch.def[aria-checked="true"] { background:#22c55e }
+.check { width:20px; height:20px; border-radius:5px; border:1.25px solid #52525b; display:inline-grid; place-items:center; background:transparent; cursor:pointer; padding:0 }
+.check[aria-checked="true"] { background:#cfff04; border-color:#cfff04 }
+.check svg { opacity:0 } .check[aria-checked="true"] svg { opacity:1 }
+.badge { border-radius:999px; padding:1.75px 8.75px; font-size:12px; font-weight:500 }
+.chipf { min-height:42px; padding:0 16px; border-radius:21px; border:1px solid #3F3F46; display:inline-flex; align-items:center; font-size:14px; font-weight:500; background:transparent; color:var(--foreground); cursor:pointer }
+.chipf[aria-pressed="true"] { background:#FAFAFA; color:#09090b; border-color:#FAFAFA }
+html[data-mode="light"] .chipf { border-color:#D4D4D8 }
+html[data-mode="light"] .chipf[aria-pressed="true"] { background:#95FF48; border-color:#95FF48 }
+.toast { background:var(--surface); border-radius:21px; padding:14px; display:flex; align-items:center; gap:10.5px; font-weight:500; font-size:14px; width:min(340px,100%) }
+.toast .ok { color:var(--pierre) } html[data-mode="light"] .toast .ok { color:var(--success) }
+.tabs { display:flex; gap:4px }
+.tabs button { height:40px; border-radius:20px; padding:0 16px; border:0; font:500 14px/20px var(--font); color:var(--foreground); background:transparent; cursor:pointer }
+.tabs button[aria-selected="true"] { background:rgba(255,255,255,.85); color:#000 }
+html[data-mode="light"] .tabs button[aria-selected="true"] { background:#18181b; color:#fafafa }
+.prog { height:8px; border-radius:4px; background:rgba(255,255,255,.15); width:min(260px,100%); overflow:hidden }
+html[data-mode="light"] .prog { background:rgba(0,0,0,.15) }
+.prog i { display:block; height:100%; width:62%; background:var(--foreground); border-radius:4px }
+.skel { background:var(--muted); border-radius:5.25px; animation:pulse 1.6s ease-in-out infinite }
+@keyframes pulse { 50% { opacity:.4 } }
+.tabbar { display:flex; justify-content:space-around; background:rgba(24,24,27,.9); border:1px solid var(--glass-border); border-radius:28px; padding:8px 6px; width:min(340px,100%) }
+html[data-mode="light"] .tabbar { background:rgba(255,255,255,.9) }
+.tabbar span { display:grid; justify-items:center; gap:3px; font-size:10.5px; color:var(--tab-inactive) }
+.tabbar span.on { color:#CFFF04 } html[data-mode="light"] .tabbar span.on { color:#8bb800 }
+.sheet { width:min(360px,100%); background:var(--background); border:1px solid var(--border); border-radius:24px; padding:10px 16px 18px; display:grid; gap:10px }
+.sheet .handle { width:49px; height:5.25px; border-radius:99px; background:color-mix(in srgb, var(--muted-foreground) 40%, transparent); justify-self:center }
+.sheet .opt { background:var(--surface); border-radius:14px; padding:14px; display:flex; gap:10.5px; align-items:center; font-weight:500 }
+
+/* telefone + widgets */
+.stage { display:grid; grid-template-columns:minmax(0,400px) minmax(0,1fr); gap:32px; align-items:start }
+.phone { width:100%; max-width:390px; border-radius:44px; border:1px solid var(--border-strong); background:var(--background); overflow:hidden; position:relative; user-select:none }
+.phone .bgglow { position:absolute; inset:0 0 auto 0; height:300px; background:radial-gradient(120% 90% at 30% 0%, #1d3a06 0%, transparent 60%), linear-gradient(#0d1a0a, transparent); opacity:.9; pointer-events:none }
+html[data-mode="light"] .phone .bgglow { background:radial-gradient(120% 90% at 30% 0%, #ecfccb 0%, transparent 60%) }
+.phone .inner { position:relative; padding:18px 0 22px }
+.ph-head { padding:0 20px 12px; display:grid; gap:4px; min-height:118px }
+.ph-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px }
+.greet { font:600 32px/38px var(--font); letter-spacing:-.8px; margin:0 }
+.tier { font:500 15px/20px var(--font); color:var(--muted-foreground) }
+.ph-edit { display:none; padding:6px 16px 14px; align-items:center; justify-content:space-between; gap:8px }
+.ph-edit h4 { margin:0; font:700 21px/28px var(--font) }
+.gpill { height:34px; border-radius:17px; padding:0 14px; border:0; background:rgba(255,255,255,.1); box-shadow:inset 0 0 0 1px var(--glass-border); color:var(--pierre); font:500 14px var(--font); cursor:pointer }
+html[data-mode="light"] .gpill { background:rgba(0,0,0,.05); color:var(--success) }
+.phone.editing .ph-head { display:none } .phone.editing .ph-edit { display:flex }
+.phone.editing .ph-tabs, .phone.editing .ph-tabbar { visibility:hidden }
+.ph-tabs { padding:0 16px 10px }
+.grid { display:flex; flex-wrap:wrap; gap:18px; padding:8px 16px 0 }
+.w { position:relative; background:var(--surface); border-radius:24px; padding:14px; display:flex; flex-direction:column; gap:7px; cursor:pointer; transition:transform .25s, opacity .2s; touch-action:none }
+.w.half { width:calc(50% - 9px); height:200px } .w.wide { width:100%; height:170px } .w.full { width:100%; min-height:220px }
+.w .wt { display:flex; align-items:center; justify-content:space-between; font-size:14px; color:var(--muted-foreground); font-weight:500 }
+.w .wv { font:800 17.5px/24.5px var(--font); color:var(--foreground); font-variant-numeric:tabular-nums }
+.w.wide .wv, .w.full .wv { font-size:21px; line-height:28px }
+.w .ws { font-size:12.5px; color:var(--muted-foreground) }
+.w svg.ch { margin-top:auto; width:100% }
+.w .rm, .w .rs { display:none }
+.phone.editing .w { animation:jiggle .18s ease-in-out infinite alternate }
+.phone.editing .w:nth-child(2n) { animation-direction:alternate-reverse; animation-delay:-.09s }
+@keyframes jiggle { from { transform:rotate(-.8deg) } to { transform:rotate(.8deg) } }
+.phone.editing .w .rm { display:grid; position:absolute; top:-6px; left:-6px; width:24px; height:24px; border-radius:12px; place-items:center; background:rgba(63,63,70,.92); box-shadow:inset 0 0 0 1px var(--glass-border); border:0; cursor:pointer; color:#fff; z-index:2 }
+html[data-mode="light"] .phone.editing .w .rm { background:rgba(161,161,170,.95) }
+.phone.editing .w .rs { display:block; position:absolute; bottom:-10px; right:-12px; padding:8px; color:rgba(255,255,255,.7); background:none; border:0; cursor:pointer }
+html[data-mode="light"] .phone.editing .w .rs { color:rgba(0,0,0,.5) }
+.w.removing { transform:scale(.6) !important; opacity:0; animation:none !important }
+.w.pulse { animation:pulseadd .62s ease-out !important }
+@keyframes pulseadd { 29% { transform:scale(1.08) } 55% { transform:scale(.97) } 77% { transform:scale(1.04) } 100% { transform:scale(1) } }
+.w.dragging { transform:scale(1.05) !important; box-shadow:0 16px 40px rgba(0,0,0,.4); z-index:5; animation:none !important }
+.grid.has-drag .w:not(.dragging) { opacity:.65 }
+.addbtn { margin:24px auto 0; display:flex }
+.ph-tabbar { margin:22px auto 0; padding:0 16px }
+.ctx { position:absolute; z-index:20; width:200px; border-radius:16px; background:rgba(39,39,42,.96); box-shadow:inset 0 0 0 1px var(--glass-border), 0 18px 40px rgba(0,0,0,.45); padding:6px 0; backdrop-filter:blur(30px) }
+html[data-mode="light"] .ctx { background:rgba(255,255,255,.97) }
+.ctx button.it { display:flex; width:100%; align-items:center; justify-content:space-between; padding:10px 14px; font:400 15px var(--font); color:var(--foreground); background:none; border:0; cursor:pointer; text-align:left }
+.ctx button.it:hover { background:rgba(255,255,255,.06) }
+.ctx button.it.red { color:#FF453A }
+.ctx hr { border:0; border-top:1px solid var(--border); margin:6px 0 }
+.ctx .sizes { display:flex; gap:6px; padding:6px 14px 8px }
+.ctx .sizes button { flex:1; height:30px; border-radius:15px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font:500 12.5px var(--mono); cursor:pointer }
+.ctx .sizes button[aria-pressed="true"] { background:var(--pierre); color:#09090b; border-color:var(--pierre) }
+.ctx .sizes button:disabled { opacity:.3; cursor:not-allowed }
+.backdrop { position:absolute; inset:0; background:rgba(0,0,0,.3); z-index:19 }
+.steps { display:grid; gap:10px; counter-reset:s; padding:0; margin:0; list-style:none }
+.steps li { display:grid; grid-template-columns:34px minmax(0,1fr); gap:10px; font-size:14px }
+.steps li::before { counter-increment:s; content:counter(s); width:26px; height:26px; border-radius:13px; display:grid; place-items:center; background:var(--surface); font:600 12px var(--mono); color:var(--brand) }
+.steps li b { font-weight:600 }
+.steps li span { color:var(--muted-foreground) }
+.kv { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:10px }
+.kv div { background:var(--surface); border-radius:14px; padding:12px 14px; min-width:0 }
+.kv b { display:block; font:600 20px var(--font); font-variant-numeric:tabular-nums; letter-spacing:-.02em }
+.kv span { font-size:12px; color:var(--muted-foreground) }
+.hint { font-size:12.5px; color:var(--muted-foreground); text-align:center; margin-top:10px }
+footer { padding-block:32px; color:var(--muted-foreground); font-size:13px }
+
+@media (max-width:900px) {
+  .wrap { grid-template-columns:minmax(0,1fr); gap:0 }
+  nav { position:static; max-height:none; padding-block:20px 0 }
+  nav ol { display:flex; flex-wrap:wrap; gap:4px }
+  nav small { margin-bottom:12px }
+  .stage { grid-template-columns:minmax(0,1fr) }
+  .typerow { grid-template-columns:minmax(0,1fr); gap:4px }
+}
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav aria-label="Seções">
+  <div class="logo"><i></i>Pierre DS</div>
+  <small>io.cloudwalk.pierre · v4.0.6</small>
+  <ol>
+    <li><a href="#visao">Visão geral</a></li>
+    <li><a href="#cores">Cores e temas</a></li>
+    <li><a href="#paletas">Paletas de dados</a></li>
+    <li><a href="#tipografia">Tipografia</a></li>
+    <li><a href="#espaco">Espaço, raios e sombras</a></li>
+    <li><a href="#glass">Glass e blur</a></li>
+    <li><a href="#componentes">Componentes</a></li>
+    <li><a href="#home">Home e widgets</a></li>
+    <li><a href="#edicao">Edição de widgets</a></li>
+    <li><a href="#catalogo">Catálogo de widgets</a></li>
+    <li><a href="#movimento">Movimento e hápticos</a></li>
+    <li><a href="#fontes">Evidências</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero" id="visao">
+  <div class="eyebrow">Engenharia reversa · Pierre.apk</div>
+  <h1>Pierre Design System</h1>
+  <p>Este documento reúne os tokens, componentes e o sistema de widgets da home extraídos do APK do Pierre (CloudWalk). A interface é React Native/Expo, estilizada com NativeWind v4 sobre primitivas gluestack-ui. Todos os valores vêm do bundle Hermes v98 decompilado. Os espécimes abaixo foram recriados em HTML a partir desses valores.</p>
+  <div class="meta">
+    <span class="pill">Fonte <b>Geist</b></span>
+    <span class="pill">Marca <b>#CFFF04</b></span>
+    <span class="pill">NativeWind <b>rem = 14</b></span>
+    <span class="pill">Tema <b>dark forçado</b></span>
+    <span class="pill">8.743 classes compiladas</span>
+  </div>
+  <p class="note" style="margin-top:22px">Legenda: <span class="tag-o">O</span> observado literalmente no código · <span class="tag-i">I</span> inferido. O app define <code>LIGHT_MODE_DISABLED = true</code>, então em produção fica sempre escuro. A paleta clara existe e pode ser vista pelo seletor abaixo.</p>
+  <div class="toolbar" style="margin:16px 0 0">
+    <div class="seg" role="group" aria-label="Tema">
+      <button type="button" id="t-dark" aria-pressed="true">Dark (produção)</button>
+      <button type="button" id="t-light" aria-pressed="false">Light (desativado no app)</button>
+    </div>
+  </div>
+</header>
+
+<section id="cores">
+  <h2>Cores e temas</h2>
+  <p class="lead"><code>THEME_TOKENS</code> é exportado com o hook <code>useThemeColors()</code>, que devolve a paleta do modo atual com <code>isDark</code>. O NativeWind expõe as mesmas cores como variáveis CSS (<code>--background</code>, <code>--pierre</code>, <code>--surface</code>…). Os swatches mudam com o seletor de tema.</p>
+  <h3>Superfícies e texto</h3>
+  <div class="swatches" id="sw-base"></div>
+  <h3>Semânticas</h3>
+  <div class="swatches" id="sw-sem"></div>
+  <h3>Marca</h3>
+  <div class="swatches" id="sw-brand"></div>
+  <p class="note"><b>brand</b> muda com o tema (#cfff04 → #8bb800 no claro). <b>pierre</b> (#c7ff00) é fixo e aparece em <code>bg-pierre</code>: botão “Adicionar Widget”, toast de sucesso e pontos de notificação. <code>PIERRE_GREEN</code> = hsl(95,100%,64%) ≈ #94FF47 é usado em gráficos.</p>
+  <h3>Estados de status</h3>
+  <div class="tbl"><table>
+    <tr><th>Uso</th><th>Valor</th><th>Origem</th></tr>
+    <tr><td>Toast</td><td>error <code>bg-destructive</code> · warning <code>bg-warning</code> · success <code>bg-pierre</code> · info <code>bg-primary</code></td><td class="mono">L1036572</td></tr>
+    <tr><td>Alert</td><td>fundo destructive/10, warning, pierre/10 · texto destructive, warning, pierre</td><td class="mono">L2366736</td></tr>
+    <tr><td>Tab bar</td><td>ativo #CFFF04 · inativo rgba(255,255,255,.63) dark / rgba(30,30,40,.69) light</td><td class="mono">L2573827</td></tr>
+    <tr><td>Input</td><td>foco <code>border-foreground</code> · erro <code>border-destructive</code> · OTP <code>border-lime-300</code></td><td class="mono">L923912</td></tr>
+    <tr><td>Glass overlay</td><td><code>surface-glass-overlay</code>: #E4E4E7 light / #27272A dark</td><td class="mono">L1914217</td></tr>
+  </table></div>
+</section>
+
+<section id="paletas">
+  <h2>Paletas de dados</h2>
+  <p class="lead">Cores fixas usadas em gráficos, categorias e logos de instituições. Elas não mudam com o tema.</p>
+  <h3>Categorias de gasto <span class="mono" style="color:var(--muted-foreground);font-weight:400">NATIVE_CATEGORY_GROUPS · L2206144</span></h3>
+  <div class="dots" id="cat"></div>
+  <h3>Limite, composição da fatura e gráficos</h3>
+  <div class="dots" id="charts"></div>
+  <h3>Paleta de widgets de IA <span class="mono" style="color:var(--muted-foreground);font-weight:400">L3021896</span></h3>
+  <div class="dots" id="aipal"></div>
+  <h3>Instituições financeiras <span class="mono" style="color:var(--muted-foreground);font-weight:400">57 objetos {slug, name, color} · L1342768</span></h3>
+  <div class="dots" id="banks"></div>
+  <h3>Gradientes e fundos</h3>
+  <div class="grads" id="grads"></div>
+</section>
+
+<section id="tipografia">
+  <h2>Tipografia</h2>
+  <p class="lead">A UI usa só a <b>Geist</b> (@expo-google-fonts/geist 0.4.1), com Regular e Medium carregados primeiro. As classes <code>font-*</code> trocam a <i>família</i> (Geist-Medium, Geist-Bold…) e mantêm <code>fontWeight: '400'</code>. Como o <code>rem</code> é 14, a escala do Tailwind fica 12,5% menor que o normal, e <code>text-sm</code> foi redefinido para 16 px, ficando maior que <code>text-base</code>.</p>
+  <div class="weights" id="weights"></div>
+  <h3>Escala (classe → tamanho / entrelinha, contagem de uso)</h3>
+  <div id="typescale"></div>
+  <h3>Estilos recorrentes</h3>
+  <div class="tbl"><table>
+    <tr><th>Papel</th><th>Especificação</th><th class="num">Usos</th></tr>
+    <tr><td>Saudação da home</td><td>Geist SemiBold 32/38, tracking −0.8</td><td class="num">—</td></tr>
+    <tr><td>Título de tela</td><td><code>text-[40px]</code> · Heading 2xl → 3xl (26.25/31.5) Bold</td><td class="num">—</td></tr>
+    <tr><td>Título de seção</td><td><code>text-2xl font-medium leading-8</code> (21/28)</td><td class="num">29</td></tr>
+    <tr><td>Corpo</td><td><code>text-base font-medium leading-6</code> (14/21)</td><td class="num">60</td></tr>
+    <tr><td>Rótulo</td><td><code>text-sm font-medium</code> (16)</td><td class="num">106</td></tr>
+    <tr><td>Texto de apoio</td><td><code>text-base text-muted-foreground</code></td><td class="num">41+</td></tr>
+    <tr><td>Valor de widget</td><td><code>text-xl font-extrabold</code> (half) · <code>text-2xl font-extrabold</code> (wide)</td><td class="num">—</td></tr>
+    <tr><td>Chat</td><td>17/24, tracking −0.15</td><td class="num">—</td></tr>
+  </table></div>
+  <p class="note">Também estão no APK, sem uso no JS: Atkinson, Inter Bold e Roboto (fontes de SDKs nativos <span class="tag-i">I</span>), MaterialSymbols e FontAwesome6 (pouco usadas). O conjunto principal de ícones é o <b>PierreIcon</b>: 465 SVGs próprios, 24×24, <code>fill: currentColor</code>, 586 referências.</p>
+</section>
+
+<section id="espaco">
+  <h2>Espaço, raios e sombras</h2>
+  <p class="lead">A unidade do Tailwind vale 3,5 px (<code>p-4</code> = 14 px). O visual é plano, com bordas de 1 px; quase não há sombras.</p>
+  <div class="kv">
+    <div><b>16</b><span>PAGE_HORIZONTAL_PADDING · padding do grid</span></div>
+    <div><b>20</b><span>SCREEN_HORIZONTAL_PADDING · hero da home</span></div>
+    <div><b>18</b><span>gap entre widgets</span></div>
+    <div><b>16</b><span>CARD_GAP</span></div>
+    <div><b>10.5</b><span>gap-3 · o gap mais usado (321×)</span></div>
+    <div><b>14</b><span>px-4 · o padding mais usado (385×)</span></div>
+  </div>
+  <h3>Raios</h3>
+  <div class="radii" id="radii"></div>
+  <p class="note">Glass e pílulas seguem a regra raio = altura ÷ 2 (36→18, 40→20, 44→22, 48→24, 56→28). <code>BORDER_RADIUS</code> = 8 e <code>CHART_CORNER_RADIUS</code> = 4.</p>
+  <h3>Sombras</h3>
+  <div class="tbl"><table>
+    <tr><th>Classe</th><th>Offset</th><th class="num">Raio</th><th class="num">Elevation</th><th>Cor</th></tr>
+    <tr><td>shadow-xs</td><td>0, 1</td><td class="num">2</td><td class="num">2</td><td class="mono">#0000000d</td></tr>
+    <tr><td>shadow-sm</td><td>0, 1</td><td class="num">1</td><td class="num">1</td><td class="mono">#00000059</td></tr>
+    <tr><td>shadow</td><td>0, 1</td><td class="num">4</td><td class="num">3</td><td class="mono">#00000059</td></tr>
+    <tr><td>shadow-lg</td><td>0, 4</td><td class="num">10</td><td class="num">8</td><td class="mono">#00000059</td></tr>
+    <tr><td>shadow-soft-1</td><td>0, 0</td><td class="num">10</td><td class="num">10</td><td class="mono">#2626261a</td></tr>
+    <tr><td>shadow-hard-2</td><td>0, 3</td><td class="num">10</td><td class="num">10</td><td class="mono">#26262633</td></tr>
+  </table></div>
+</section>
+
+<section id="glass">
+  <h2>Glass e blur</h2>
+  <p class="lead">O glass do app é o liquid glass nativo do iOS 26 (<code>expo-glass-effect</code>: <code>GlassView</code>, <code>GlassContainer</code>). <code>useWidgetGlass()</code> só retorna <code>'glass'</code> quando <code>isLiquidGlassAvailable()</code> é verdadeiro. <b>No Android, tudo cai no fallback sólido <code>bg-surface</code></b>. O blur usa <code>expo-blur</code>, que no Android roda via <code>dimezisBlurView</code>.</p>
+  <div class="tbl"><table>
+    <tr><th>Estilo</th><th>Valores</th><th>Origem</th></tr>
+    <tr><td>actionGlass / closeGlass</td><td>borda rgba(255,255,255,.18), r999 · close 36×36 r18</td><td class="mono">L2368392</td></tr>
+    <tr><td>Botões de header / voltar</td><td>44×44 r22 · em sheets 40×40 r20</td><td class="mono">—</td></tr>
+    <tr><td>editButtonGlass</td><td>h48 r24 · variante minH34 r17</td><td class="mono">L2589656</td></tr>
+    <tr><td>settingsGlass</td><td>28×28 r14, bg rgba(255,255,255,.15)</td><td class="mono">L3076924</td></tr>
+    <tr><td>pillGlass</td><td>bg rgba(24,24,27,.4), elevation 12</td><td class="mono">L3023007</td></tr>
+    <tr><td>fallbackGlass</td><td>bg rgba(149,255,72,.28)</td><td class="mono">L2383688</td></tr>
+    <tr><td>Sheet glass no Android</td><td>rgba(38,38,38,.92) / rgba(240,240,240,.88)</td><td class="mono">L1015415</td></tr>
+  </table></div>
+  <div class="tbl"><table>
+    <tr><th>Intensidade do blur</th><th>Onde</th></tr>
+    <tr><td class="num">12</td><td>ProtectedCpfAlert</td></tr>
+    <tr><td class="num">20</td><td>BottomSheet, CreditCard, menus</td></tr>
+    <tr><td class="num">40 (tint dark)</td><td>Actionsheet, AppHeader, backdrop de sheet</td></tr>
+    <tr><td class="num">48</td><td>BlurredFooter</td></tr>
+    <tr><td class="num">60</td><td>CollapsibleTitleHeader, AnimatedSearchBar</td></tr>
+    <tr><td class="num">72</td><td>AlertNudge</td></tr>
+  </table></div>
+</section>
+
+<section id="componentes">
+  <h2>Componentes</h2>
+  <p class="lead">O barrel do design system exporta PierreButton, InputField, InputOTP, PinDots/PinKeypad, Toast/useToast, BottomSheet, FloatingActionButton, CollapsibleTitleHeader, BankLogo, CreditCard, PierreAvatar e ThemeTransitionProvider. Não existe Card nem Checkbox genérico: são composições de classes.</p>
+
+  <h3>PierreButton — 8 variantes, tamanho regular</h3>
+  <div class="specimen" id="btn-variants"></div>
+  <h3>PierreButton — 5 tamanhos (primary)</h3>
+  <div class="specimen" id="btn-sizes"></div>
+  <div class="tbl"><table>
+    <tr><th>Tamanho</th><th>Padding (px)</th><th>Texto</th><th class="num">Ícone</th><th class="num">Altura <span class="tag-i">I</span></th></tr>
+    <tr><td>mini</td><td>10.5 × 7</td><td>text-sm medium (16)</td><td class="num">16</td><td class="num">~33</td></tr>
+    <tr><td>small</td><td>10.5 × 7</td><td>text-base medium (14/21)</td><td class="num">18</td><td class="num">~35</td></tr>
+    <tr><td>regular</td><td>14 × 10.5</td><td>text-base medium</td><td class="num">20</td><td class="num">~42</td></tr>
+    <tr><td>large</td><td>21 × 14</td><td>text-base medium</td><td class="num">20</td><td class="num">~49</td></tr>
+    <tr><td>xlarge</td><td>28 × 17.5</td><td>text-lg semibold (15.75/24.5)</td><td class="num">22</td><td class="num">~59.5</td></tr>
+  </table></div>
+  <p class="note">Formato pílula (<code>rounded-full</code>), gap de 10.5 entre ícone e texto. Ao pressionar, encolhe para 0.96 com spring {damping 15, stiffness 300, mass 0.5}. Disabled usa <code>opacity-60</code>; loading mostra Spinner <code>sm</code>. A combinação mais usada é primary/xlarge (70×).</p>
+
+  <h3>InputField, Switch, Checkbox, chips e badges</h3>
+  <div class="specimen">
+    <div class="field focus"><label>E-mail</label><div class="box">pierre@cloudwalk.io</div><div class="help">Use o e-mail cadastrado</div></div>
+    <div class="field error"><label>CPF</label><div class="box">123.456.789-00</div><div class="help err">CPF inválido</div></div>
+  </div>
+  <div class="specimen" style="margin-top:12px">
+    <button type="button" class="switch" role="switch" aria-checked="true" aria-label="Switch brand"></button>
+    <button type="button" class="switch def" role="switch" aria-checked="true" aria-label="Switch default"></button>
+    <button type="button" class="switch" role="switch" aria-checked="false" aria-label="Switch desligado"></button>
+    <button type="button" class="check" role="checkbox" aria-checked="true" aria-label="Checkbox"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="#09090b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button type="button" class="check" role="checkbox" aria-checked="false" aria-label="Checkbox"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="#09090b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button type="button" class="chipf" aria-pressed="true">Este mês</button>
+    <button type="button" class="chipf" aria-pressed="false">Cartão</button>
+    <span class="badge" style="background:var(--muted)">Pendente</span>
+    <span class="badge" style="background:var(--success-subtle);color:var(--brand)">Ativo</span>
+    <span class="badge" style="background:var(--pierre);color:#09090b">Pro</span>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Componente</th><th>Especificação</th></tr>
+    <tr><td>InputField</td><td>h 56, padding 14, r14, borda 1, fundo <code>background</code>. Label flutuante: dentro {top 16, 16/24}, acima {top −10, 12/20}, 150 ms. Texto Geist-Medium. Disabled <code>opacity-50</code>.</td></tr>
+    <tr><td>Switch</td><td>Trilho 44×24 r12, thumb 20, deslocamento 20. Off #3f3f46; on #22c55e (default) ou pierre (brand). Escala sm .75 / md 1 / lg 1.25. Spring {1, 15, 120}.</td></tr>
+    <tr><td>Checkbox (inline)</td><td>20×20 r5, borda 1.25; marcado #cfff04, desmarcado #52525b; linha h64 r24.</td></tr>
+    <tr><td>FilterChip</td><td>minH 42, padH 16, r21. Dark: borda #3F3F46 → fundo #FAFAFA. Light: #D4D4D8 → #95FF48.</td></tr>
+    <tr><td>Badge</td><td><code>rounded-full px-2.5 py-0.5</code>; fundos muted, warning/20, success-subtle, surface-hover.</td></tr>
+  </table></div>
+
+  <h3>Tabs, toast, progresso, skeleton e tab bar</h3>
+  <div class="specimen">
+    <div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true">Visão</button><button type="button" role="tab" aria-selected="false">Cartão</button><button type="button" role="tab" aria-selected="false">Investimentos</button></div>
+    <div class="toast"><svg class="ico ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Saldo em contas adicionado</div>
+    <div class="prog" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><i></i></div>
+    <div style="display:grid;gap:7px;width:200px"><div class="skel" style="height:14px;width:60%"></div><div class="skel" style="height:24px"></div><div class="skel" style="height:14px;width:80%"></div></div>
+    <div class="tabbar" aria-hidden="true" id="tabbar-spec"></div>
+  </div>
+
+  <h3>BottomSheet</h3>
+  <div class="specimen">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 2px"><b style="font-weight:500;font-size:16px">Substituir widget</b><span style="color:var(--muted-foreground)">✕</span></div>
+      <div class="opt">▢ Visualize este widget em modo compacto</div>
+      <div class="opt">▭ Visualize este widget em modo horizontal</div>
+      <div class="opt">▣ Visualize este widget em tela cheia</div>
+      <button type="button" class="btn primary xlarge" style="width:100%">Substituir</button>
+    </div>
+    <div style="flex:1;min-width:220px;font-size:13.5px;color:var(--muted-foreground);display:grid;gap:6px">
+      <div>Modal RN com fade. Backdrop com blur 40 + overlay rgba(0,0,0,.6) no dark e .4 no light.</div>
+      <div>Card com fundo <code>background</code>, maxHeight 95%, raio ~24 <span class="tag-i">I</span>. Handle <code>w-14 h-1.5</code> em muted-foreground/40.</div>
+      <div>Option: <code>bg-surface gap-3 p-4 rounded-2xl</code>. Header <code>p-6</code>. Fecha arrastando, com limiar de 0.5.</div>
+      <div>Variantes <code>default</code> e <code>floating</code>. Confirmações usam sheets; alertas simples usam o <code>Alert.alert</code> nativo.</div>
+    </div>
+  </div>
+  <p class="note">Gráficos: módulo nativo próprio <b>PierreCharts</b> (Area, Bar, HorizontalBar, Donut, GroupedBar, Bubble). No Donut: ringWidth 18, gap de 10°, até 6 fatias, grupo “Outros” em #5C5C68. Em telas secundárias aparece react-native-gifted-charts <span class="tag-i">I</span>, além de Skia para shaders e auroras.</p>
+</section>
+
+<section id="home">
+  <h2>Home e widgets</h2>
+  <p class="lead">A home se chama <b>Vision</b>. Por cima de um vídeo ou gradiente de fundo ficam a saudação, as tabs segmentadas e um grid ordenável de widgets em <b>duas colunas</b>. O protótipo abaixo é interativo: <b>segure um widget</b> para abrir o menu de contexto e continue segurando para entrar no modo de edição.</p>
+  <div class="stage">
+    <div>
+      <div class="phone" id="phone">
+        <div class="bgglow"></div>
+        <div class="inner">
+          <div class="ph-head">
+            <div class="ph-top">
+              <span style="display:flex;gap:8px;align-items:center"><span style="width:32px;height:32px;border-radius:16px;background:var(--surface-pressed);display:grid;place-items:center;font-weight:600;font-size:13px">JT</span></span>
+              <span style="display:flex;gap:8px"><button type="button" class="iconbtn" aria-label="Notificações"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button></span>
+            </div>
+            <p class="greet" id="greet">Boa tarde, João</p>
+            <span class="tier">Você é Pierre Pro</span>
+          </div>
+          <div class="ph-edit">
+            <h4>Editar widgets</h4>
+            <span style="display:flex;gap:6px"><button type="button" class="gpill" id="fill">Preencher</button><button type="button" class="gpill" id="done">Concluído</button></span>
+          </div>
+          <div class="ph-tabs"><div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true">Visão geral</button><button type="button" role="tab" aria-selected="false">Investimentos</button></div></div>
+          <div class="grid" id="grid"></div>
+          <button type="button" class="btn secondary xlarge addbtn" id="addw"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Adicionar widgets</button>
+          <div class="ph-tabbar"><div class="tabbar" id="tabbar-phone" aria-hidden="true"></div></div>
+        </div>
+      </div>
+      <p class="hint">Valores de exemplo. Clique e segure: 0,5 s abre o menu; 2 s ao todo entra em edição.</p>
+    </div>
+    <div style="min-width:0">
+      <h3 style="margin-top:0">Grid <span class="tag-o">O</span></h3>
+      <div class="tbl"><table>
+        <tr><th>Tamanho</th><th>Menu</th><th>Largura</th><th class="num">Altura</th><th class="num">Raio</th></tr>
+        <tr><td>half</td><td>2x2</td><td>(W − 32 − 18) ÷ 2</td><td class="num">200</td><td class="num">24</td></tr>
+        <tr><td>wide</td><td>2x4</td><td>W − 32</td><td class="num">170</td><td class="num">24</td></tr>
+        <tr><td>full</td><td>4x4</td><td>W − 32</td><td class="num">conteúdo</td><td class="num">24</td></tr>
+      </table></div>
+      <div class="tbl"><table>
+        <tr><th>WIDGET_GRID_DEFAULTS</th><th class="num">Valor</th></tr>
+        <tr><td>horizontalPadding</td><td class="num">16</td></tr>
+        <tr><td>gap</td><td class="num">18</td></tr>
+        <tr><td>dragActivationDelay</td><td class="num">200 ms</td></tr>
+        <tr><td>longPressMs (menu)</td><td class="num">500 ms</td></tr>
+        <tr><td>holdToEditMs (depois do menu)</td><td class="num">1500 ms</td></tr>
+        <tr><td>moveThreshold (cancela)</td><td class="num">10 px</td></tr>
+        <tr><td>resizeDragThreshold</td><td class="num">40 px</td></tr>
+      </table></div>
+      <h3>Anatomia de um widget</h3>
+      <ul style="margin:0;padding-left:18px;font-size:14px;display:grid;gap:5px;color:var(--muted-foreground)">
+        <li><b style="color:var(--foreground)">Container:</b> <code>bg-surface</code> r24 (GlassContainer <code>clear</code> só no iOS 26).</li>
+        <li><b style="color:var(--foreground)">half:</b> <code>p-4 gap-2</code>, chevronRight 16 em #71717a.</li>
+        <li><b style="color:var(--foreground)">wide:</b> título <code>text-lg</code> muted, valor <code>text-2xl font-extrabold</code>, subtítulo <code>text-base</code>.</li>
+        <li><b style="color:var(--foreground)">Vazio:</b> ícone wifiOff, “Sem dados disponíveis”.</li>
+        <li><b style="color:var(--foreground)">Erro:</b> feedbackWarning #EF4444, “Falha ao sincronizar dados”.</li>
+        <li><b style="color:var(--foreground)">Loading:</b> shimmer com opacidade .3 ↔ .7 em 800 ms, blocos #71717a.</li>
+        <li><b style="color:var(--foreground)">Tap:</b> háptico Light e navegação para a rota do widget.</li>
+      </ul>
+      <h3>Ordem da tela</h3>
+      <ol class="steps">
+        <li><div><b>AppHeader</b> <span>ou VisionEditModeHeader no modo de edição · UpsellPill · SegmentedTabs</span></div></li>
+        <li><div><b>Hero</b> <span>saudação “Bom dia/Boa tarde/Boa noite, nome”, tier “Você é Pierre Pro”. Some em 70 px de scroll; overlay do vídeo chega a .75 em 260 px</span></div></li>
+        <li><div><b>Banners</b> <span>CdbPendingPixBanner, AppUpdateNudge</span></div></li>
+        <li><div><b>Grid de widgets</b> <span>Sortable.Flex (react-native-sortables), px 16, pt 8</span></div></li>
+        <li><div><b>“Adicionar widgets”</b> <span>PierreButton secondary xlarge, ícone calcAdd, marginTop 24</span></div></li>
+        <li><div><b>Flutuantes</b> <span>FAB “reorganizar com IA” (jimSparkle, right 20), ComposerOverlay, tab bar nativa</span></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="edicao">
+  <h2>Edição de widgets</h2>
+  <p class="lead">O fluxo de edição é implementado por <code>VisionJiggleWrapper</code>, <code>VisionSortableWidgetGrid</code> e <code>VisionWidgetContextMenu</code>. Ele imita a edição da tela inicial do iOS: tremor, botão de remover no canto e redimensionamento por arraste.</p>
+  <h3>Entrar no modo de edição</h3>
+  <ol class="steps">
+    <li><div><b>Segurar 500 ms</b> <span>háptico Medium · bloqueia o tap por 1200 ms · abre o menu de contexto em top = max(12, y − 140), left = min(max(12, x − 100), W − 212)</span></div></li>
+    <li><div><b>Continuar segurando +1500 ms</b> <span>o menu fecha, háptico Heavy, <code>enterEditMode</code>, a tab bar some. Evento <code>edit_mode_entered {widget_count}</code></span></div></li>
+    <li><div><b>Ou tocar em “Editar widgets”</b> <span>no menu de contexto</span></div></li>
+    <li><div><b>Sair</b> <span>“Concluído” no header de edição. Evento <code>edit_mode_exited {widget_count, did_reorder}</code></span></div></li>
+  </ol>
+  <h3>No modo de edição</h3>
+  <div class="tbl"><table>
+    <tr><th>Elemento</th><th>Comportamento</th></tr>
+    <tr><td>Jiggle</td><td>Rotação ±0.8°, período 180 ms (90 ms iniciais), <code>withRepeat</code> infinito, easing inOut(sin), direção aleatória por widget.</td></tr>
+    <tr><td>Remover</td><td>Botão glass 24×24 r12 em top −6 / left −6, ícone calcMinus 14 branco, stroke 3. Háptico Light, animação de 200 ms; após 250 ms chama <code>hideWidget</code> com háptico Success. Evento <code>removed</code>.</td></tr>
+    <tr><td>Reordenar</td><td>Drag depois de 200 ms. Item ativo em escala 1.05, sombra .4; os outros ficam com opacidade .65. Auto-scroll offset 150, velocidade máxima 2500. Layout <code>LinearTransition.springify().damping(22).stiffness(220).mass(0.75)</code>. Fim do drag: <code>setOrder</code>, evento <code>reordered</code>.</td></tr>
+    <tr><td>Redimensionar</td><td>Handle em arco 28×28 em bottom −10 / right −12, branco 70% (dark) ou preto 50% (light). Limiar 40 px, arrasto máx. 120, handle cresce para 1.25, widget cai até opacidade .5. Spring d16 s300 m0.7. Hápticos: Medium ao iniciar, Heavy em preview e confirmação, Light ao cancelar.</td></tr>
+    <tr><td>Direções do resize</td><td>half: ↓ full, → wide · wide: ↓/→ full, ←/↑ half · full: ← half, ↑ wide.</td></tr>
+    <tr><td>Header</td><td>“Editar widgets” (text-2xl bold) com pílulas glass “Preencher” (<code>fillGaps</code>) e “Concluído”, texto <code>text-pierre</code>.</td></tr>
+    <tr><td>Menu de contexto</td><td>Card glass r16, itens <code>px-4 py-2.5 text-[15px]</code>: “Ocultar dados” / “Mostrar dados”, “Editar widgets”, “Remover” (#FF453A), divisor, chips 2x2 / 2x4 / 4x4. Backdrop rgba(0,0,0,.3).</td></tr>
+    <tr><td>Widget novo</td><td>Pulse de escala 1.08 → .97 → 1.04 → 1 (180/160/140/140 ms) e rolagem até ele.</td></tr>
+  </table></div>
+  <h3>Adicionar widget</h3>
+  <ol class="steps">
+    <li><div><b>Painel de controle</b> <span>tela <code>vision/add-widget</code>, título 28/32 peso 400, busca com placeholder “Novo Widget”. Uma seção por widget com previews de cada tamanho; seção “Agentes” para widgets de IA. Estado vazio: “Sua home já está completa”.</span></div></li>
+    <li><div><b>Detalhe</b> <span><code>widget-detail?id=&amp;size=</code>: pager de tamanhos com pontos (ativo 24×8, inativo 8×8) e botão “Adicionar Widget” variant <code>pierre</code> (lime, texto preto, ícone calcCircleAdd).</span></div></li>
+    <li><div><b>Confirmação</b> <span>toast “&lt;label&gt; adicionado”, <code>showWidget</code>, <code>setWidgetSize</code>, PATCH em <code>/api/mobile/vision/layout</code>.</span></div></li>
+    <li><div><b>Widget com IA</b> <span>chat “Criar widget” (placeholder “Envie uma mensagem”) → “Adicionar widget”. Id <code>ai-&lt;uuid&gt;</code>, só tamanho half. Menu com “Remover da home” e “Apagar permanentemente”.</span></div></li>
+  </ol>
+  <h3>Persistência e analytics</h3>
+  <div class="tbl"><table>
+    <tr><th>Item</th><th>Valor</th></tr>
+    <tr><td>Store local</td><td>Zustand persist <code>pierre-vision-widget-order:&lt;userId&gt;</code> (ou <code>:guest</code>): order, hiddenWidgets, widgetSizes, widgetChartVariants, pendingSync, aiWidgets, version, isDirty</td></tr>
+    <tr><td>Servidor</td><td><code>GET/PATCH /api/mobile/vision/layout</code> · <code>/layout/reorganize</code> (FAB de IA) · <code>/api/mobile/vision/widgets</code></td></tr>
+    <tr><td>Home do cartão</td><td><code>pierre-widget-order</code> · <code>/api/mobile/home-layout</code> · <code>SHOW_ADD_WIDGETS_BUTTON = false</code></td></tr>
+    <tr><td>Evento “Widget Interaction”</td><td>action: reordered · removed · resized · added · deleted · settings_opened. Props: widget_id, widget_type (system/ai), widget_size, chart_variant, source_screen</td></tr>
+    <tr><td>Evento “Home Interaction”</td><td>edit_mode_entered · edit_mode_exited · add_widget_sheet_opened</td></tr>
+  </table></div>
+</section>
+
+<section id="catalogo">
+  <h2>Catálogo de widgets</h2>
+  <p class="lead"><code>VISION_WIDGET_REGISTRY</code> (home) e <code>WIDGET_REGISTRY</code> (home do cartão). Nenhum widget da Vision é fixo; todos podem ser ocultados.</p>
+  <h3>Home Vision</h3>
+  <div class="tbl"><table id="cat-vision"></table></div>
+  <p class="note">Ordem padrão: wallet, account-balance, cash-flow, cdb-investment, available-limit, installments, cards, monthly-spending, recent-transactions, spending-by-category, subscriptions. Sob demanda: cdb-position, cdb-performance, leo-agent, leo-insight. Aposentados do seletor: cards, cdb-performance. Gastos do mês tem variantes de gráfico: Área (padrão), Barras (só em half) e Bloquinhos.</p>
+  <h3>Home do cartão</h3>
+  <div class="tbl"><table id="cat-card"></table></div>
+</section>
+
+<section id="movimento">
+  <h2>Movimento e hápticos</h2>
+  <p class="lead">As animações usam Reanimated. A mola padrão de pressão é d15 s300 m0.5 com escala .96. A troca de tema é um reveal circular de 500 ms com <code>Easing.out(quad)</code>.</p>
+  <div class="tbl"><table>
+    <tr><th>Componente</th><th>withSpring</th></tr>
+    <tr><td>PierreButton, PressableScale</td><td class="mono">damping 15 · stiffness 300 · mass 0.5</td></tr>
+    <tr><td>Widget2x2</td><td class="mono">damping 25 · stiffness 800</td></tr>
+    <tr><td>Resize de widget</td><td class="mono">damping 16 · stiffness 300 · mass 0.7</td></tr>
+    <tr><td>Layout do grid</td><td class="mono">damping 22 · stiffness 220 · mass 0.75</td></tr>
+    <tr><td>Switch</td><td class="mono">damping 15 · stiffness 120</td></tr>
+    <tr><td>CreditCard</td><td class="mono">damping 15 · stiffness 180</td></tr>
+    <tr><td>ChartTooltip</td><td class="mono">damping 26 · stiffness 320 · mass 0.9</td></tr>
+  </table></div>
+  <p class="note">Durações frequentes: 200 ms (19×), 300 ms (17×). Constantes: GLASS_TRANSITION_MS 250, LABEL_ANIMATION_DURATION 150, entrada 200 / saída 150, congelar cartão 1150 / descongelar 750.</p>
+  <h3>Presets hápticos (Meta Haptics Studio, .hac Android ↔ .ahap iOS)</h3>
+  <div class="tbl"><table>
+    <tr><th>Preset</th><th class="num">Duração</th><th>Uso observado</th></tr>
+    <tr><td>cat-purr</td><td class="num">699 ms</td><td>Congelar o cartão; modo “computer” do ModePicker (repeat 2)</td></tr>
+    <tr><td>8-bit</td><td class="num">885 ms</td><td rowspan="11" style="color:var(--muted-foreground)">Disponíveis pelo nome em <code>playCustomHaptic</code>, sem chamada direta encontrada</td></tr>
+    <tr><td>bouncing</td><td class="num">650 ms</td></tr>
+    <tr><td>button</td><td class="num">643 ms</td></tr>
+    <tr><td>double</td><td class="num">112 ms</td></tr>
+    <tr><td>rebound</td><td class="num">34 ms</td></tr>
+    <tr><td>rocket-launch</td><td class="num">1952 ms</td></tr>
+    <tr><td>sharp</td><td class="num">5 ms</td></tr>
+    <tr><td>soft</td><td class="num">10 ms</td></tr>
+    <tr><td>spring</td><td class="num">568 ms</td></tr>
+    <tr><td>swoosh</td><td class="num">150 ms</td></tr>
+    <tr><td>tock-tock-tock</td><td class="num">501 ms</td></tr>
+  </table></div>
+  <p class="note">A API também tem <code>impact</code> (light/medium/heavy), <code>success</code>, <code>warning</code>, <code>error</code> e <code>selection</code> via expo-haptics. Hápticos progressivos no AnimatedCounter: 0 → light, 0.5 → medium, 0.8 → heavy.</p>
+</section>
+
+<section id="fontes" style="border-bottom:0">
+  <h2>Evidências e limites</h2>
+  <ul style="font-size:14px;color:var(--muted-foreground);display:grid;gap:6px;padding-left:18px;max-width:80ch">
+    <li>Artefato: <code>Pierre.apk</code> (214 MB), app config v4.0.6, bundle <code>assets/index.android.bundle</code> em Hermes bytecode v98, decompilado com hermes-dec 0.1.8 (versão 98 não é oficialmente suportada pela ferramenta).</li>
+    <li>As referências <code>Lnnnn</code> apontam para linhas do pseudo-JS decompilado. É análise estática: nada foi executado em aparelho.</li>
+    <li>Os espécimes são recriações em HTML/CSS. Glass e blur nativos foram aproximados, e no Android o app usa os fallbacks sólidos.</li>
+    <li>Não foi verificado, widget por widget, qual componente (Widget2x2/WidgetWide/WidgetFull) cada um usa em cada tamanho, nem a animação de entrada do menu de contexto.</li>
+    <li>Atkinson, Inter e Roboto vêm de SDKs nativos (inferido: não há referência no JS).</li>
+  </ul>
+</section>
+<footer>Pierre Design System · extraído em 16/10/2026</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s) };
+  var root = document.documentElement;
+
+  // ---- tema
+  function setMode(m){
+    root.dataset.mode = m;
+    $('#t-dark').setAttribute('aria-pressed', m==='dark');
+    $('#t-light').setAttribute('aria-pressed', m==='light');
+    renderSwatches();
+    try { localStorage.setItem('pds-mode', m) } catch(e){}
+  }
+  $('#t-dark').onclick = function(){ setMode('dark') };
+  $('#t-light').onclick = function(){ setMode('light') };
+
+  var BASE = [['background','--background'],['card','--card'],['surface','--surface'],['surfaceHover','--surface-hover'],['surfacePressed','--surface-pressed'],['muted','--muted'],['border','--border'],['borderStrong','--border-strong'],['borderProminent','--border-prominent'],['foreground','--foreground'],['mutedForeground','--muted-foreground'],['foregroundDisabled','--foreground-disabled'],['primary','--primary'],['primaryForeground','--primary-foreground']];
+  var SEM = [['destructive','--destructive'],['destructiveSubtle','--destructive-subtle'],['destructiveBorder','--destructive-border'],['warning','--warning'],['warningSubtle','--warning-subtle'],['warningBorder','--warning-border'],['success','--success'],['successSubtle','--success-subtle'],['successBorder','--success-border'],['successForeground','--success-foreground']];
+  var BRAND = [['brand','--brand'],['pierre','--pierre'],['neonLime50','--neon-lime-50'],['cashbackReleased','#243400'],['PIERRE_GREEN','#94FF47']];
+  function sw(list, el){
+    var cs = getComputedStyle(root);
+    el.innerHTML = list.map(function(t){
+      var v = t[1].indexOf('--')===0 ? cs.getPropertyValue(t[1]).trim() : t[1];
+      return '<div class="sw"><div class="chip" style="background:'+v+'"></div><div class="lbl"><b>'+t[0]+'</b><span>'+v+'</span></div></div>';
+    }).join('');
+  }
+  function renderSwatches(){ sw(BASE,$('#sw-base')); sw(SEM,$('#sw-sem')); sw(BRAND,$('#sw-brand')); }
+
+  function dots(list, el){ el.innerHTML = list.map(function(d){ return '<div class="dot"><i style="background:'+d[1]+'"></i>'+d[0]+'<span>'+d[1]+'</span></div>' }).join('') }
+  dots([['Alimentação','#fb923c'],['Compras','#ec4899'],['Saúde','#f43f5e'],['Serviços digitais','#d946ef'],['Transporte','#f59e0b'],['Moradia','#06b6d4'],['Lazer','#ef4444'],['Finanças','#22c55e'],['Renda','#10b981'],['Educação','#6366f1'],['Impostos','#78716c'],['Seguros','#eab308'],['Apostas','#ef4444'],['Doações','#f472b6'],['Outros','#6b7280']], $('#cat'));
+  dots([['Limite · baixo','#CFFF04'],['Limite · médio','#F59E0B'],['Limite · alto','#EF4444'],['Trilho de limite','#27272A'],['Fatura · parcelas','#3B82F6'],['Fatura · transações','#CFFF04'],['Fatura · rotativo','#EF4444'],['Fatura · juros','#F59E0B'],['Origem cartão','#E88100'],['Origem banco','#3A84CA'],['Donut · Outros','#5C5C68'],['Barra · label dark','#A1A1AA']], $('#charts'));
+  dots([['1','#95FF48'],['2','#3B82F6'],['3','#F59E0B'],['4','#EF4444'],['5','#8B5CF6'],['6','#EC4899'],['7','#14B8A6'],['8','#F97316'],['9','#6366F1'],['10','#84CC16']], $('#aipal'));
+  dots([['Carteira Pierre','#27272A'],['Cartão Pierre','#CFFF04'],['InfinitePay','#171527'],['Banco do Brasil','#FDFC30'],['Inter','#EA7100'],['BMG','#FA6300'],['99Pay','#FFDD00'],['Bradesco','#CC092F'],['Next','#03FF60'],['Itaú','#FF6200'],['Santander','#EC0000'],['Nubank','#820AD1'],['PicPay','#11C76F'],['Mercado Pago','#FFE700'],['BRB','#009EE2'],['C6','#242424'],['XP / Rico / Clear…','#000000'],['BV','#223AD2'],['Méliuz','#FD9CBF'],['Pan','#00C5FF'],['BNB','#F68B1F'],['BTG','#001E61'],['Safra','#00003C'],['Caixa','#EF7D1A'],['Neon','#0F92FF'],['PagBank','#88D8D8'],['Stone','#00A868'],['Sicoob','#033C45'],['Sofisa','#00A88F'],['Banrisul','#0094FF'],['Atacadão','#F97501'],['Carrefour','#1E5BC6'],['Crefisa','#00537F'],['Itaú Cartões','#FB6404'],['Mercantil','#2058A8'],['Pague Veloz','#F88000'],['RecargaPay','#42535C'],['Rede Celcoin','#FF9400'],['Safra Financeira','#00586F'],['Safra Pay','#BAA05C'],['Sicredi','#146E37'],['Unicred','#AF964F'],['Woop','#00E870'],['Porto Bank','#2B56C0'],['Players Bank','#FF3C00'],['Midway','#00595B'],['Digio','#202E55'],['Dock','#00D8D8'],['Banco Master','#00488C']], $('#banks'));
+
+  var G = [['midnight-gradient','linear-gradient(160deg,#0a0a0b,#1a1a2e,#16213e)'],['pierre-glow','linear-gradient(160deg,#0a0a0b,#0d1a0a,#0a0a0b)'],['deep-ocean','linear-gradient(160deg,#0a0a0b,#0c1222,#162544)'],['warm-dark','linear-gradient(160deg,#0a0a0b,#1a140e,#0a0a0b)'],['positive','linear-gradient(180deg,#134a0e,#0a0a0b)'],['negative','linear-gradient(180deg,#991b1b,#0a0a0b)'],['aurora · pierre','radial-gradient(circle at 20% 30%,#6BE04C,transparent 55%),radial-gradient(circle at 80% 70%,#40BF33,transparent 50%),#0a0a0b'],['aurora · orbs','radial-gradient(circle at 25% 30%,#8C5CF5,transparent 55%),radial-gradient(circle at 75% 70%,#DB2678,transparent 50%),#0a0a0b'],['AI edge glow','linear-gradient(90deg,#7BE43A,#95FF48,#B7FF7A)'],['Widget CDB','linear-gradient(135deg,#cfff04,#d6ff2b,#e1ff63)'],['Shimmer de texto','linear-gradient(90deg,#FAFAFA,#FF76C8,#FFB000,#8DE600,#FAFAFA)'],['Heatmap','linear-gradient(90deg,rgb(240,243,13) 66%,rgb(149,255,72))']];
+  $('#grads').innerHTML = G.map(function(g){ var dark = /cfff04|7BE43A|FAFAFA|240,243/.test(g[1]); return '<div class="grad" style="background:'+g[1]+';'+(dark?'color:#09090b':'')+'">'+g[0]+'</div>' }).join('');
+
+  // ---- tipografia
+  var W = [[100,'Thin'],[200,'ExtraLight'],[300,'Light'],[400,'Regular'],[500,'Medium'],[600,'SemiBold'],[700,'Bold'],[800,'ExtraBold'],[900,'Black']];
+  $('#weights').innerHTML = W.map(function(w){ return '<span style="font-weight:'+w[0]+'">'+w[1]+'</span>' }).join('');
+  var T = [['text-6xl',52.5,null,7],['text-5xl',42,42,10],['text-4xl',31.5,35,13],['text-3xl',26.25,31.5,55],['text-2xl',21,28,102],['text-xl',17.5,24.5,97],['text-sm *',16,null,501],['text-lg',15.75,24.5,130],['text-base',14,21,495],['text-body-small',14,18,17],['text-xs',10.5,14,183],['text-2xs',10,null,6]];
+  $('#typescale').innerHTML = T.map(function(t){ return '<div class="typerow"><div class="k"><b>'+t[0]+'</b>'+t[1]+(t[2]?' / '+t[2]:'')+' · '+t[3]+'×</div><div style="font-size:'+t[1]+'px;line-height:'+(t[2]?t[2]+'px':'1.2')+';font-weight:500;overflow-wrap:anywhere">R$ 12.480,90 em Saldo em contas</div></div>' }).join('');
+
+  var R = [['rounded',3.5],['rounded-md',5.25],['rounded-lg',7],['rounded-xl',10.5],['2xl · card/input',14],['3xl · toast',21],['widget',24],['rounded-full',999]];
+  $('#radii').innerHTML = R.map(function(r){ return '<div class="rad"><i style="border-radius:'+Math.min(r[1],36)+'px"></i>'+r[0]+'<br><span class="mono">'+r[1]+'</span></div>' }).join('');
+
+  // ---- botões
+  var ico = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>';
+  $('#btn-variants').innerHTML = ['primary','secondary','outline','ghost','destructive','accent','pierre','glass'].map(function(v){ var c = v==='accent'?'secondary':v; return '<button type="button" class="btn regular '+c+'">'+ico+v+'</button>' }).join('') + '<button type="button" class="btn regular primary disabled" aria-disabled="true">disabled</button>';
+  $('#btn-sizes').innerHTML = ['mini','small','regular','large','xlarge'].map(function(s){ return '<button type="button" class="btn primary '+s+'">'+s+'</button>' }).join('');
+
+  var tabIcons = ['<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>','<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/>','<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>','<path d="M4 6h16M4 12h16M4 18h10"/>'];
+  var tabNames = ['Início','Cartão','Investir','Extrato'];
+  var tb = tabNames.map(function(n,i){ return '<span class="'+(i===0?'on':'')+'"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+tabIcons[i]+'</svg>'+n+'</span>' }).join('');
+  $('#tabbar-spec').innerHTML = tb; $('#tabbar-phone').innerHTML = tb;
+
+  // toggles
+  document.querySelectorAll('.switch,.check').forEach(function(b){ b.onclick = function(){ b.setAttribute('aria-checked', b.getAttribute('aria-checked')!=='true') } });
+  document.querySelectorAll('.chipf').forEach(function(b){ b.onclick = function(){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')!=='true') } });
+  document.querySelectorAll('.tabs').forEach(function(t){ t.addEventListener('click', function(e){ var b = e.target.closest('button'); if(!b) return; t.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-selected', x===b) }) }) });
+
+  // ---- catálogo
+  var VIS = [['wallet','Carteira','full','half, full','—'],['account-balance','Saldo em contas','half','half, wide, full','/vision/account-balance'],['monthly-spending','Gastos do mês','wide','half, wide, full','/vision/monthly-spending'],['cash-flow','Fluxo de Caixa nas Contas','half','half, wide','/vision/cash-flow'],['available-limit','Limite disponível','half','half, wide','/vision/card-invoices?filterKey=limits'],['installments','Parcelamentos','half','half, wide, full','…?filterKey=installments'],['patrimony','Patrimônio','half','half, full','sempre oculto'],['cards','Cartões','half','half, full','…?filterKey=invoices · aposentado'],['recent-transactions','Transações recentes','full','half, wide, full','/(tabs)/transactions'],['spending-by-category','Gastos por categoria','half','half, wide, full','/vision/spending-by-category'],['subscriptions','Assinaturas','half','half, wide, full','/vision/subscriptions'],['cdb-investment','Investimentos CDB','wide','wide','/vision/cdb-investment-entry · sistema'],['cdb-performance','Vencimento CDB','half','half, wide','sob demanda · aposentado'],['cdb-position','Posição CDB','full','half, full','sob demanda'],['leo-agent','Leo','half','half','/investments/agents/leo-cdb · sob demanda'],['leo-insight','Insights do Leo','wide','wide','sob demanda'],['ai-&lt;uuid&gt;','Widget IA','half','half','gerado por chat']];
+  $('#cat-vision').innerHTML = '<tr><th>id</th><th>Título</th><th>Padrão</th><th>Tamanhos</th><th>Destino / notas</th></tr>' + VIS.map(function(r){ return '<tr><td class="mono">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td class="mono" style="color:var(--muted-foreground)">'+r[4]+'</td></tr>' }).join('');
+  var CARD = [['card','Cartão','Visualize seu cartão de crédito','full','fixo'],['last-purchase','Última compra','Veja sua compra mais recente','full','fixo'],['available-limit','Limite usado','Acompanhe quanto do seu limite já foi usado','half · half, wide','miscGauge'],['invoice','Fatura','Confira o valor da sua fatura atual','half','receiptStraight'],['monthly-spending','Gasto mensal','Visualize a evolução dos seus gastos no mês','full · wide, full','arrowTrendUp'],['subscriptions','Assinaturas','Gerencie suas assinaturas recorrentes','half · todos','deviceTv'],['installments','Parcelas','Acompanhe suas compras parceladas','half · todos','cardCredit'],['recent-transactions','Transações recentes','Veja suas últimas transações no cartão','full · todos','contentTextList'],['spending-by-category','Gastos por categoria','Veja como seus gastos se dividem por categoria','half · todos','productChart'],['cdb-position','CDB','Acompanhe a posição do seu investimento em CDB','full · todos','coinPiggy'],['cashback','Cashback','Acompanhe o cashback acumulado do seu cartão','wide · half, wide','cwProductsAward']];
+  $('#cat-card').innerHTML = '<tr><th>id</th><th>Título</th><th>Descrição</th><th>Tamanho</th><th>Ícone</th></tr>' + CARD.map(function(r){ return '<tr><td class="mono">'+r[0]+'</td><td>'+r[1]+'</td><td style="color:var(--muted-foreground)">'+r[2]+'</td><td>'+r[3]+'</td><td class="mono">'+r[4]+'</td></tr>' }).join('');
+
+  // ---- protótipo da home
+  var h = new Date().getHours();
+  $('#greet').textContent = (h<12?'Bom dia':h<18?'Boa tarde':'Boa noite') + ', João';
+  var SUP = {wallet:['half','full'],'account-balance':['half','wide','full'],'cash-flow':['half','wide'],'available-limit':['half','wide'],'monthly-spending':['half','wide','full'],'recent-transactions':['half','wide','full'],'spending-by-category':['half','wide','full'],subscriptions:['half','wide','full'],installments:['half','wide','full']};
+  var widgets = [
+    {id:'account-balance', t:'Saldo em contas', v:'R$ 12.480,90', s:'3 contas conectadas', size:'half', kind:'spark'},
+    {id:'cash-flow', t:'Fluxo de caixa', v:'+R$ 2.310', s:'Entradas − saídas', size:'half', kind:'bars'},
+    {id:'monthly-spending', t:'Gastos do mês', v:'R$ 4.872,15', s:'12% abaixo de setembro', size:'wide', kind:'area'},
+    {id:'available-limit', t:'Limite disponível', v:'R$ 6.200', s:'38% usado', size:'half', kind:'limit'},
+    {id:'subscriptions', t:'Assinaturas', v:'R$ 189,70', s:'7 ativas', size:'half', kind:'none'},
+    {id:'spending-by-category', t:'Gastos por categoria', v:'Alimentação', s:'31% do total', size:'half', kind:'donut'},
+    {id:'installments', t:'Parcelamentos', v:'R$ 1.140', s:'4 compras', size:'half', kind:'none'}
+  ];
+  var hidden = [];
+  var chev = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>';
+  function chart(w){
+    if(w.kind==='area') return '<svg class="ch" viewBox="0 0 300 60" preserveAspectRatio="none" height="56"><defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFFF04" stop-opacity=".35"/><stop offset="1" stop-color="#CFFF04" stop-opacity="0"/></linearGradient></defs><path d="M0 50 L30 44 60 46 90 36 120 38 150 28 180 30 210 20 240 22 270 12 300 14 L300 60 0 60Z" fill="url(#ga)"/><path d="M0 50 L30 44 60 46 90 36 120 38 150 28 180 30 210 20 240 22 270 12 300 14" fill="none" stroke="#CFFF04" stroke-width="2"/></svg>';
+    if(w.kind==='spark') return '<svg class="ch" viewBox="0 0 100 40" preserveAspectRatio="none" height="44"><path d="M0 32 L15 28 30 30 45 20 60 22 75 12 100 8" fill="none" stroke="#CFFF04" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>';
+    if(w.kind==='bars') return '<svg class="ch" viewBox="0 0 100 44" height="48">'+[18,26,14,32,22,38].map(function(v,i){ return '<rect x="'+(i*17+2)+'" y="'+(44-v)+'" width="11" height="'+v+'" rx="4" fill="'+(i===5?'#CFFF04':'#52525b')+'"/>' }).join('')+'</svg>';
+    if(w.kind==='limit') return '<div style="margin-top:auto;height:8px;border-radius:4px;background:#27272A;overflow:hidden"><i style="display:block;height:100%;width:38%;background:#CFFF04;border-radius:4px"></i></div>';
+    if(w.kind==='donut') return '<svg class="ch" viewBox="0 0 42 42" height="64" style="width:64px"><circle cx="21" cy="21" r="15.9" fill="none" stroke="#fb923c" stroke-width="6" stroke-dasharray="31 69" transform="rotate(-90 21 21)"/><circle cx="21" cy="21" r="15.9" fill="none" stroke="#ec4899" stroke-width="6" stroke-dasharray="22 78" stroke-dashoffset="-33" transform="rotate(-90 21 21)"/><circle cx="21" cy="21" r="15.9" fill="none" stroke="#06b6d4" stroke-width="6" stroke-dasharray="18 82" stroke-dashoffset="-57" transform="rotate(-90 21 21)"/><circle cx="21" cy="21" r="15.9" fill="none" stroke="#5C5C68" stroke-width="6" stroke-dasharray="21 79" stroke-dashoffset="-77" transform="rotate(-90 21 21)"/></svg>';
+    return '';
+  }
+  var grid = $('#grid'), phone = $('#phone');
+  function render(){
+    grid.innerHTML = widgets.map(function(w,i){
+      return '<div class="w '+w.size+'" data-i="'+i+'" role="button" tabindex="0" aria-label="'+w.t+'">'+
+        '<button type="button" class="rm" aria-label="Remover '+w.t+'"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg></button>'+
+        '<div class="wt">'+w.t+chev+'</div><div class="wv">'+(dataHidden?'••••••':w.v)+'</div><div class="ws">'+w.s+'</div>'+chart(w)+
+        '<button type="button" class="rs" aria-label="Redimensionar '+w.t+'"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M24 6a18 18 0 0 1-18 18"/></svg></button></div>';
+    }).join('');
+  }
+  var dataHidden = false;
+  function setEdit(on){ phone.classList.toggle('editing', on); closeMenu() }
+  $('#done').onclick = function(){ setEdit(false) };
+  $('#fill').onclick = function(){
+    // fillGaps: agrupa os half em pares para não sobrar buraco
+    var halves = widgets.filter(function(w){ return w.size==='half' });
+    if(halves.length % 2){ var last = halves[halves.length-1]; if(SUP[last.id].indexOf('wide')>-1) last.size='wide'; }
+    var out=[], buf=[];
+    widgets.forEach(function(w){ if(w.size==='half'){ buf.push(w); if(buf.length===2){ out=out.concat(buf); buf=[] } } else out.push(w) });
+    widgets = out.concat(buf); render();
+  };
+  $('#addw').onclick = function(){
+    if(!hidden.length){ toastPhone('Sua home já está completa'); return }
+    var w = hidden.shift(); widgets.push(w); render();
+    var el = grid.lastElementChild; el.classList.add('pulse'); el.scrollIntoView({block:'nearest', behavior:'smooth'});
+    setTimeout(function(){ el.classList.remove('pulse') }, 700);
+    toastPhone(w.t+' adicionado');
+  };
+  function toastPhone(msg){
+    var t = document.createElement('div'); t.className='toast'; t.style.cssText='position:absolute;top:16px;left:16px;right:16px;width:auto;z-index:30;box-shadow:0 10px 30px rgba(0,0,0,.35)';
+    t.innerHTML='<svg class="ico ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>'+msg;
+    phone.appendChild(t); setTimeout(function(){ t.remove() }, 3000);
+  }
+  function removeAt(i){
+    var el = grid.querySelector('[data-i="'+i+'"]'); el.classList.add('removing');
+    setTimeout(function(){ hidden.push(widgets.splice(i,1)[0]); render() }, 250);
+  }
+  // menu de contexto
+  var menu=null, back=null;
+  function closeMenu(){ if(menu){ menu.remove(); back.remove(); menu=back=null } }
+  function openMenu(i, x, y){
+    closeMenu();
+    var w = widgets[i], r = phone.getBoundingClientRect();
+    back = document.createElement('div'); back.className='backdrop'; back.onclick=closeMenu; phone.appendChild(back);
+    menu = document.createElement('div'); menu.className='ctx'; menu.setAttribute('role','menu');
+    var px = x - r.left, py = y - r.top;
+    menu.style.left = Math.min(Math.max(12, px-100), r.width-212)+'px';
+    menu.style.top = Math.max(12, py-140)+'px';
+    var sizes = [['half','2x2'],['wide','2x4'],['full','4x4']].map(function(s){ var ok = SUP[w.id].indexOf(s[0])>-1; return '<button type="button" data-s="'+s[0]+'" aria-pressed="'+(w.size===s[0])+'"'+(ok?'':' disabled')+'>'+s[1]+'</button>' }).join('');
+    menu.innerHTML = '<button type="button" class="it" data-a="hide">'+(dataHidden?'Mostrar dados':'Ocultar dados')+'</button><button type="button" class="it" data-a="edit">Editar widgets</button><button type="button" class="it red" data-a="rm">Remover</button><hr><div class="sizes">'+sizes+'</div>';
+    menu.onclick = function(e){
+      var b = e.target.closest('button'); if(!b || b.disabled) return;
+      if(b.dataset.s){ w.size=b.dataset.s; closeMenu(); render(); return }
+      if(b.dataset.a==='hide'){ dataHidden=!dataHidden; closeMenu(); render() }
+      if(b.dataset.a==='edit') setEdit(true);
+      if(b.dataset.a==='rm'){ closeMenu(); removeAt(i) }
+    };
+    phone.appendChild(menu);
+  }
+  // long-press (500 ms menu, +1500 ms edição), drag para reordenar, handle para resize
+  var t1=null, t2=null, start=null, drag=null, rs=null;
+  function clearT(){ clearTimeout(t1); clearTimeout(t2); t1=t2=null }
+  grid.addEventListener('pointerdown', function(e){
+    var el = e.target.closest('.w'); if(!el) return;
+    var i = +el.dataset.i;
+    if(e.target.closest('.rm')){ removeAt(i); return }
+    if(e.target.closest('.rs')){ rs = {i:i, x:e.clientX, y:e.clientY, el:el}; el.setPointerCapture(e.pointerId); return }
+    start = {x:e.clientX, y:e.clientY, i:i, el:el};
+    if(phone.classList.contains('editing')){
+      t1 = setTimeout(function(){ drag = {i:i, el:el}; el.classList.add('dragging'); grid.classList.add('has-drag') }, 200);
+    } else {
+      t1 = setTimeout(function(){ openMenu(i, e.clientX, e.clientY);
+        t2 = setTimeout(function(){ setEdit(true) }, 1500) }, 500);
+    }
+    el.setPointerCapture(e.pointerId);
+  });
+  grid.addEventListener('pointermove', function(e){
+    if(rs){ var dx=e.clientX-rs.x, dy=e.clientY-rs.y, d=Math.min(120, Math.hypot(dx,dy)); rs.el.style.opacity = 1 - d/240; return }
+    if(drag){
+      drag.el.style.translate = (e.clientX-start.x)+'px '+(e.clientY-start.y)+'px';
+      var over = document.elementsFromPoint(e.clientX, e.clientY).find(function(n){ return n.classList && n.classList.contains('w') && n!==drag.el });
+      if(over){ var j=+over.dataset.i; var m=widgets.splice(drag.i,1)[0]; widgets.splice(j,0,m); start={x:e.clientX,y:e.clientY,i:j}; render(); drag.el=grid.querySelector('[data-i="'+j+'"]'); drag.i=j; drag.el.classList.add('dragging'); grid.classList.add('has-drag') }
+      return;
+    }
+    if(start && Math.hypot(e.clientX-start.x, e.clientY-start.y) > 10){ clearTimeout(t1); if(!menu) clearTimeout(t2) }
+  });
+  function end(e){
+    if(rs){
+      var dx=e.clientX-rs.x, dy=e.clientY-rs.y, w=widgets[rs.i], next=w.size;
+      if(Math.hypot(dx,dy) >= 40){
+        var hor = Math.abs(dx) > Math.abs(dy);
+        if(w.size==='half') next = hor ? (dx>0?'wide':'half') : (dy>0?'full':'half');
+        else if(w.size==='wide') next = (dx>0||dy>0) ? 'full' : 'half';
+        else next = hor ? (dx<0?'half':'full') : (dy<0?'wide':'full');
+        if(SUP[w.id].indexOf(next)>-1) w.size = next;
+      }
+      rs=null; render(); return;
+    }
+    clearTimeout(t1);
+    if(!menu) clearTimeout(t2);
+    if(drag){ drag=null; grid.classList.remove('has-drag'); render() }
+    start=null;
+  }
+  grid.addEventListener('pointerup', end);
+  grid.addEventListener('pointercancel', end);
+  phone.addEventListener('pointerup', function(){ if(menu) clearTimeout(t2) });
+  grid.addEventListener('contextmenu', function(e){ e.preventDefault() });
+  grid.addEventListener('keydown', function(e){ var el=e.target.closest('.w'); if(el && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); var r=el.getBoundingClientRect(); openMenu(+el.dataset.i, r.left+r.width/2, r.top+60) } });
+
+  var saved='dark'; try { saved = localStorage.getItem('pds-mode') || 'dark' } catch(e){}
+  setMode(saved);
+  render();
+})();
+</script>
+</body>
+</html>

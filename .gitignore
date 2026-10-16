@@ -1,0 +1,8 @@
+# APK original: binário de terceiros e acima do limite de 100 MB do GitHub
+*.apk
+
+# Artefatos de decompilação
+out.js
+strings.json
+apk/
+venv/
