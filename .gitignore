@@ -6,3 +6,6 @@ out.js
 strings.json
 apk/
 venv/
+
+# Pasta de trabalho local (out.js, extrações)
+_trabalho/
