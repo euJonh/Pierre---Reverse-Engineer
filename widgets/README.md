@@ -2,15 +2,17 @@
 
 O objetivo é documentar cada widget da home "Vision" e da home do cartão com detalhe suficiente para replicá-los de forma idêntica em outro projeto React Native: cores, tipografia, layout em px, lógica de dados, logos, animações e textos. A análise é estática, feita sobre o bundle Hermes decompilado. Nos documentos, **[O]** marca o que foi observado no código (com a linha `Lnnnn` do `out.js`) e **[I]** o que foi inferido.
 
-## Status (pausado em 19/10/2026)
+## Status (atualizado em 21/10/2026)
+
+**Em andamento:** grupo 4 (Assinaturas). Depois, os grupos 5 e 6.
 
 | # | Arquivo | Widgets | Status |
 |---|---|---|---|
 | 0 | `00-base.md` | Renderer, grid, `Widget2x2`, `WidgetWide`, `WidgetFull`, estados vazio/erro/carregando, "Ocultar dados", moeda, tokens dark, config NativeWind | ✅ Completo |
 | 1 | `01-carteira-saldo-fluxo.md` | `wallet`, `account-balance`, `cash-flow`, BankLogo | ✅ Completo |
-| 2 | `02-gastos-PARCIAL.md` | `monthly-spending`, `spending-by-category` | ⚠️ Parcial: faltam o desenho dos 3 gráficos e todo o `spending-by-category` |
-| 3 | — | `available-limit`, `installments`, `cards`, `patrimony`, `recent-transactions` (inclui a lógica de logo das transações) | ⏳ Não iniciado |
-| 4 | — | `subscriptions`: widget e tela de detalhe (a do screenshot), calendário, adicionar assinatura | ⏳ Não iniciado |
+| 2 | `02-gastos.md` | `monthly-spending` (gráficos nativos Kotlin `PierreCharts`: área, barras, bloquinhos, comparação), `spending-by-category` (barra segmentada, toggle Categorias/Grupos) | ✅ Completo |
+| 3 | `03-limite-parcelas-cartoes-transacoes.md` | `available-limit`, `installments`, `cards`, `patrimony`, `recent-transactions`, `VisionTransactionRow` e a lógica de logo (`MerchantAvatar` + selo do banco) | ✅ Completo |
+| 4 | — | `subscriptions`: widget e tela de detalhe (a do screenshot), calendário, adicionar assinatura | 🔄 Em andamento |
 | 5 | — | `cdb-investment`, `cdb-performance`, `cdb-position`, `leo-agent`, `leo-insight`, widgets de IA (`ai-<uuid>`) | ⏳ Não iniciado |
 | 6 | — | Home do cartão (`WIDGET_REGISTRY`): Cashback, Fatura, Cartão, Gastos por categoria, carrossel | ⏳ Não iniciado |
 
@@ -23,6 +25,18 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
   - A forma compacta só usa o sufixo "mi".
 - **Dados:** vêm de `GET /api/mobile/vision/widgets/{id}/data`, com queryKey `['vision-widget-item-data', id, size, chartVariant]` e staleTime de 2 min.
 - **Gastos do mês:** a variante de gráfico escolhida só vale para half e wide. O full sempre usa `MonthlyComparisonChart` (área do mês atual + mês anterior).
+- **Gráficos:** os de `monthly-spending` são nativos em Kotlin (módulo Expo `PierreCharts`, Canvas); para replicar, refaça em react-native-svg.
+  - Área: gasto acumulado por dia, curva Catmull-Rom, linha `#B8FF12` de 1,8 dp e degradê vertical até transparente.
+  - Comparação (full): linha do mês anterior tracejada 7/7, `#5C5C68`. O percentual compara com o mesmo dia do mês anterior.
+  - Barras (só half): pílulas com degradê `#F0F30D` → `#95FF48`.
+  - Bloquinhos: Views RN, 12 blocos de 18 px (half) ou 39 de 15 px (wide), gap 4 e raio 4; a opacidade vai de 0,32 a 1 conforme a quantidade de compras do dia.
+  - Na home nenhum gráfico anima nem vibra.
+- **Gastos por categoria:** barra horizontal segmentada com até 3 categorias, sem "Outros"; toggle Categorias/Grupos.
+- **Transações:**
+  - Linha `VisionTransactionRow` com avatar de 45 px; o valor fica `#95FF48` em crédito e `#FF5C7A` em débito.
+  - Escolha da logo (`MerchantAvatar`): logo local por palavra-chave → URL `/api/logo?domain=` → ícone da categoria → inicial.
+  - Selo do banco: caixa de 30 px em −5/−5 com logo de 22 px.
+  - Para casar as palavras-chave do `logos/mapeamento.json`, teste da mais longa para a mais curta.
 
 ## Material de trabalho (fora do git)
 Fica em `_trabalho/`, ignorada pelo `.gitignore`:
@@ -44,8 +58,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
    - os intermediários do grupo em `_trabalho/parcial/`;
    - a instrução de gravar cada seção assim que terminá-la (as sessões caíram várias vezes).
 3. Ordem sugerida:
-   - terminar o grupo 2, que já tem 11 KB e cuja próxima etapa é `MonthlyChart` (L2842298) e os gráficos;
-   - depois os grupos 3, 4, 5 e 6.
+   - grupos 4, 5 e 6, nesta ordem.
 4. Pontos de partida (linhas do `out.js`):
    - **Grupo 2:** `VisionMonthlySpendingWidget` L2843453–2850970, `SpendingByCategoryWidgetConnected` L2862447, `WidgetModeToggle` L2863541, `VisionSpendingByCategoryWidget` L2864048.
    - **Grupo 3:**

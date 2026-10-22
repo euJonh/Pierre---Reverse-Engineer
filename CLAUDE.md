@@ -14,7 +14,7 @@ Toda a análise é **estática**: nada foi executado em aparelho. Nos documentos
 |---|---|
 | `pierre-design-system.html` | Design system completo: tokens dos temas dark/light, paletas de dados (categorias, 57 bancos, gráficos, gradientes), tipografia, espaçamento, raios, sombras, glass/blur, componentes, protótipo interativo da home com edição de widgets, catálogo de widgets, molas e hápticos |
 | `agentes-pierre.md` | Agentes de IA: modelo de dados, API REST, logs, integração com o chat e as tools, catálogo dos 17 agentes, prompt de handoff, modo Computer e cartão agêntico, telas, além de uma proposta de implementação (SQL, worker, tool `createAgent`) |
-| `widgets/` | Especificação widget a widget para réplica idêntica (cores, fontes, layout em px, lógica, logos). **Em andamento**: status e como retomar em `widgets/README.md` |
+| `widgets/` | Especificação widget a widget para réplica idêntica (cores, fontes, layout em px, lógica, logos). Prontos: base (`00`), carteira/saldo/fluxo (`01`), gastos (`02`), limite/parcelas/cartões/transações (`03`). **Em andamento**: assinaturas, CDB/Leo/IA e home do cartão. Status e como retomar em `widgets/README.md` |
 | `_trabalho/` | Fora do git. `out.js` decompilado, `strings.json` e extrações parciais por grupo de widgets |
 | `logos/` | Logos extraídas do APK: bancos (50 SVG e 46 PNG), 151 merchants da fatura (PNG), bandeiras de cartão e `mapeamento.json` (palavra-chave → logo). Veja `logos/README.md` |
 | `Pierre.apk` | APK original (214 MB). **Fica fora do git**: passa do limite de 100 MB do GitHub e é binário de terceiros |
@@ -51,6 +51,9 @@ Os artefatos gerados (`out.js`, `strings.json`, venv) ficam fora do repositório
   - Segurar 500 ms abre o menu; mais 1500 ms entra no modo de edição.
   - No modo de edição os widgets tremem (±0.8°, 180 ms), e dá para remover, arrastar, redimensionar e usar "Preencher".
 - Persistência local na chave `pierre-vision-widget-order:<userId>`; no servidor, `/api/mobile/vision/layout`.
+- Fundo dos widgets no Android: `bg-surface` (#18181b), sem borda e sem sombra (glass só no iOS). Toque: só háptico Light.
+- Dados dos widgets: `GET /api/mobile/vision/widgets/{id}/data`. "Ocultar dados" usa a máscara `R$ ••••`.
+- Os gráficos de "Gastos do mês" são nativos em Kotlin (módulo `PierreCharts`); detalhes em `widgets/02-gastos.md`.
 
 ### Agentes
 - Cada agente é um registro no servidor, de tipo `scheduled` (cron) ou `condition` (com `checkInterval`).
