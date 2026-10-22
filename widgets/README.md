@@ -4,7 +4,7 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
 
 ## Status (atualizado em 21/10/2026)
 
-**Em andamento:** grupo 4 (Assinaturas). Depois, os grupos 5 e 6.
+**Próximo passo:** grupo 5 (CDB, Leo e IA). Depois, o grupo 6.
 
 | # | Arquivo | Widgets | Status |
 |---|---|---|---|
@@ -12,8 +12,8 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
 | 1 | `01-carteira-saldo-fluxo.md` | `wallet`, `account-balance`, `cash-flow`, BankLogo | ✅ Completo |
 | 2 | `02-gastos.md` | `monthly-spending` (gráficos nativos Kotlin `PierreCharts`: área, barras, bloquinhos, comparação), `spending-by-category` (barra segmentada, toggle Categorias/Grupos) | ✅ Completo |
 | 3 | `03-limite-parcelas-cartoes-transacoes.md` | `available-limit`, `installments`, `cards`, `patrimony`, `recent-transactions`, `VisionTransactionRow` e a lógica de logo (`MerchantAvatar` + selo do banco) | ✅ Completo |
-| 4 | — | `subscriptions`: widget e tela de detalhe (a do screenshot), calendário, adicionar assinatura | 🔄 Em andamento |
-| 5 | — | `cdb-investment`, `cdb-performance`, `cdb-position`, `leo-agent`, `leo-insight`, widgets de IA (`ai-<uuid>`) | ⏳ Não iniciado |
+| 4 | `04-assinaturas.md` | `subscriptions`: widget, tela de detalhe (a do screenshot), calendário Mensal/Diária, tela do dia, adicionar assinatura | ✅ Completo |
+| 5 | — | `cdb-investment`, `cdb-performance`, `cdb-position`, `leo-agent`, `leo-insight`, widgets de IA (`ai-<uuid>`) | ⏳ Não iniciado (1 tentativa interrompida sem gravar nada) |
 | 6 | — | Home do cartão (`WIDGET_REGISTRY`): Cashback, Fatura, Cartão, Gastos por categoria, carrossel | ⏳ Não iniciado |
 
 ## Principais achados até aqui
@@ -58,7 +58,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
    - os intermediários do grupo em `_trabalho/parcial/`;
    - a instrução de gravar cada seção assim que terminá-la (as sessões caíram várias vezes).
 3. Ordem sugerida:
-   - grupos 4, 5 e 6, nesta ordem.
+   - grupos 5 e 6, nesta ordem.
 4. Pontos de partida (linhas do `out.js`):
    - **Grupo 2:** `VisionMonthlySpendingWidget` L2843453–2850970, `SpendingByCategoryWidgetConnected` L2862447, `WidgetModeToggle` L2863541, `VisionSpendingByCategoryWidget` L2864048.
    - **Grupo 3:**
