@@ -4,7 +4,7 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
 
 ## Status (atualizado em 23/10/2026)
 
-**Próximo passo:** grupo 6 (home do cartão).
+**Próximo passo:** consolidar tudo num documento único e levar os widgets ao protótipo de `pierre-design-system.html`. Todos os grupos de widgets já estão especificados.
 
 | # | Arquivo | Widgets | Status |
 |---|---|---|---|
@@ -15,7 +15,8 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
 | 4 | `04-assinaturas.md` | `subscriptions`: widget, tela de detalhe (a do screenshot), calendário Mensal/Diária, tela do dia, adicionar assinatura | ✅ Completo |
 | 5a | `05a-cdb.md` | `cdb-investment` (wide, gráfico gifted-charts), `cdb-performance` (half/wide, retirado do picker), `cdb-position` (half/full, `PierreAreaChart`) | ✅ Completo |
 | 5b | `05b-leo-ia.md` | `leo-agent`, `leo-insight`, widgets de IA (`ai-<uuid>`): `AIVisionWidget`, criação pelo `WidgetChat`, `AIWidgetRenderer` (previews e home do cartão) | ✅ Completo |
-| 6 | — | Home do cartão (`WIDGET_REGISTRY`): Cashback, Fatura, Cartão, Gastos por categoria, carrossel | ⏳ Não iniciado |
+| 6a | `06a-home-cartao.md` | Home do cartão: `WIDGET_REGISTRY`, tela (`CardsScene`/`CardHomeScreen`), grade, edição e persistência, `WidgetCarousel` (do chat), dados ao vivo | ✅ Completo |
+| 6b | `06b-widgets-cartao.md` | Widgets da home do cartão: `cashback`, `invoice`, `CardWidget` (arte, máscara, ações), gastos por categoria e diferenças dos demais widgets de sistema | ✅ Completo |
 
 ## Principais achados até aqui
 - **Grid:** largura útil = tela − 32 e gap 18. Half = (útil − 18)/2 × 200 px, wide = útil × 170 px, full = útil × altura livre. Raio 24.
@@ -40,6 +41,13 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
   - Para casar as palavras-chave do `logos/mapeamento.json`, teste da mais longa para a mais curta.
 - **CDB:** visível via flag `cdbInvestmentsEnabled` de `/api/mobile/config` (`internalOnly` → só e-mails `@cloudwalk.io`). Só `cdb-investment` usa o endpoint da Vision (servidor manda `headline`, `subtitle`, `cohort`, `series`); `cdb-performance` e `cdb-position` leem `/api/cdb/*` e calculam no app, só com KYC aprovado. Nenhum usa `Widget2x2`/`WidgetWide`/`WidgetFull`.
 - **Leo:** `leo-agent` (half) é estático e abre o chat; `leo-insight` (wide, altura pelo conteúdo, mín. 160) mostra o último relatório do agente via `/api/agents/{id}/logs`.
+- **Home do cartão:**
+  - Não tem rota própria: é a cena `CardsScene` do hub `/vision` (`?section=cards`). Grade `Sortable.Flex` com gap 12 (a Vision usa 18); o cartão fica fora da grade.
+  - Há dois `WIDGET_REGISTRY` sem relação (L775589 = home do cartão, 11 ids; L2202932 = widgets `show*` do chat) e um terceiro catálogo, `WIDGET_SURFACE_CATALOG`.
+  - Persistência: `pierre-widget-order:<userId>`, `pierre:cardHomeLayout:<userId>` e `GET/PATCH /api/mobile/home-layout` (PATCH ao sair da edição ou após 500 ms).
+  - Dados ao vivo direto da API de crédito (`/credit/...`, `staleTime 0`) e substituem o dado do layout. Só `cashback` e `invoice` têm componente próprio; os outros sete reaproveitam os da Vision.
+  - `WidgetCarousel` é do chat, não da home do cartão.
+  - Cartão: número completo e CVV não são persistidos e somem da memória em 60 s; a máscara mostra só "•• " + 4 últimos dígitos.
 - **Widgets de IA:** na Vision, `AIVisionWidget` só desenha `items`/`accounts` como até 3 barras, com dados de `GET /api/mobile/vision/widgets/{id}/ai-data` (refresh 3 h, cache antes da rede); sem estado de erro e sem navegação. Criação no `WidgetChat` (`/api/mobile/vision/widgets/chat`, tools `suggest_widgets`, `show_chart_options`, `generate_preview`) e `POST /api/mobile/vision/widgets`.
 
 ## Material de trabalho (fora do git)
@@ -52,6 +60,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
   - `w3.js`: widgets do grupo 3;
   - `w4_screen.js`, `w4_cal.js` e `w4_widget.js`: assinaturas;
   - `w5/` e `w5_*.txt`: CDB, Leo e IA (entregues como `_trabalho/w5a-cdb.md` e `w5b-leo-ia.md`);
+  - `w6a-home-cartao.md` e `w6b-widgets-cartao.md`: entregas do grupo 6;
   - `w6/` e `w6b/`: home do cartão, com índice de módulos `mods.json`;
   - `w0tools/venv`: hermes-dec, para desmontar funções.
 
@@ -62,7 +71,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
    - os intermediários do grupo em `_trabalho/parcial/`;
    - a instrução de gravar cada seção assim que terminá-la (as sessões caíram várias vezes).
 3. Ordem sugerida:
-   - grupo 6. `AIWidgetRenderer` e `LiveWidgetRenderer` já foram mapeados em `05b-leo-ia.md`: reaproveite.
+   - nada pendente nos grupos de widgets.
    - Atenção: o `BRIEF.md` cita a raiz `C:/REA/Pierre/`; a raiz atual é `C:/REA/Pierre---Reverse-Engineer/`.
 4. Pontos de partida (linhas do `out.js`):
    - **Grupo 2:** `VisionMonthlySpendingWidget` L2843453–2850970, `SpendingByCategoryWidgetConnected` L2862447, `WidgetModeToggle` L2863541, `VisionSpendingByCategoryWidget` L2864048.
@@ -107,3 +116,16 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
   - widget de IA criado como cripto ou área vira lista de barras na Vision (não validado em aparelho);
   - cor da bolha usuário × IA no chat; sentido do filtro de cripto nas sugestões;
   - botão "Conversar" do Leo provavelmente invisível no Android (mesmo fundo do card).
+- **Grupo 6a (estrutura do cartão):**
+  - `last-purchase` está no registro, mas não é renderizado na grade;
+  - qual dos três catálogos vale na tela de adicionar widget;
+  - algoritmo de `hasGaps`/`fillGaps` e gatilho de "reorganizar com IA";
+  - nomes das constantes 200/20/240/52/12/120 do `JiggleWrapper`;
+  - se o refetch ao voltar ao app está ligado (`focusManager`).
+- **Grupo 6b (widgets do cartão):**
+  - `rounded-3xl`: a config compilada dá 21 px, mas os documentos 02 e 05b dizem 24 (checar);
+  - formato real das strings da API de crédito não observado;
+  - sem `data` no slot, gastos por categoria pode quebrar e cashback pode mostrar "undefined pendentes";
+  - `onExpandRequest` (supus 0) e momento da troca Congelar/Descongelar (supus 0,43);
+  - ordenação decrescente das categorias é inferida;
+  - em Parcelamentos o percentual pago é fixo em 25%; em Transações recentes os itens não trazem `type` (valor sem sinal/cor) [I].
