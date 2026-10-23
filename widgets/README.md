@@ -4,7 +4,9 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
 
 ## Status (atualizado em 23/10/2026)
 
-**Próximo passo:** consolidar tudo num documento único e levar os widgets ao protótipo de `pierre-design-system.html`. Todos os grupos de widgets já estão especificados.
+**Próximo passo:** levar os widgets ao protótipo de `pierre-design-system.html`. Todos os grupos estão especificados e consolidados em `CATALOGO.md`.
+
+Visão geral de tudo (tabelas por superfície, endpoints, storage, inconsistências e dúvidas): **`CATALOGO.md`**.
 
 | # | Arquivo | Widgets | Status |
 |---|---|---|---|
@@ -92,7 +94,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
    - **Grupo 6:**
      - Registro: `WIDGET_REGISTRY` em ~L775589 e ~L2202932.
      - Widgets: `CashbackWidget` L2985666, `InvoiceWidget` L2985949, `CardWidget` L3008528 e `WidgetCarousel` L2398930.
-5. No fim, consolide tudo num documento único e, se for útil, adicione os widgets ao protótipo de `pierre-design-system.html`.
+5. A consolidação está em `CATALOGO.md`. Resta, se for útil, adicionar os widgets ao protótipo de `pierre-design-system.html`.
 
 ## Dúvidas abertas já registradas
 - **Grupo 0:**
@@ -123,7 +125,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
   - nomes das constantes 200/20/240/52/12/120 do `JiggleWrapper`;
   - se o refetch ao voltar ao app está ligado (`focusManager`).
 - **Grupo 6b (widgets do cartão):**
-  - `rounded-3xl`: a config compilada dá 21 px, mas os documentos 02 e 05b dizem 24 (checar);
+  - (resolvido) `rounded-3xl` = 21 px; o raio 24 dos shells vem de `style`. Ver `CATALOGO.md` §8;
   - formato real das strings da API de crédito não observado;
   - sem `data` no slot, gastos por categoria pode quebrar e cashback pode mostrar "undefined pendentes";
   - `onExpandRequest` (supus 0) e momento da troca Congelar/Descongelar (supus 0,43);

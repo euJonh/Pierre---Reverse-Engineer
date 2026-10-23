@@ -391,7 +391,7 @@ return <VisionSpendingByCategoryWidget
   subcategoriesLoading={widgetMode === 'categories' && subQuery.isLoading}
   isLoading={isLoading || !isFetched} emptyState animate/>;
 ```
-- `rounded-3xl` = 24 (W0 §3); `bg-surface` = #18181B. Não existe ramo "vazio" no Connected: o vazio é tratado dentro do widget (§4.5).
+- `rounded-3xl` = **21** (W0 §14; o raio 24 dos shells vem de `style`, não da classe); `bg-surface` = #18181B. Não existe ramo "vazio" no Connected: o vazio é tratado dentro do widget (§4.5).
 
 ### 4.4 Derivações comuns (`VisionSpendingByCategoryWidget`, L2864048) [O]
 ```ts
