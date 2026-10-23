@@ -14,7 +14,7 @@ Toda a análise é **estática**: nada foi executado em aparelho. Nos documentos
 |---|---|
 | `pierre-design-system.html` | Design system completo: tokens dos temas dark/light, paletas de dados (categorias, 57 bancos, gráficos, gradientes), tipografia, espaçamento, raios, sombras, glass/blur, componentes, protótipo interativo da home com edição de widgets, catálogo de widgets, molas e hápticos |
 | `agentes-pierre.md` | Agentes de IA: modelo de dados, API REST, logs, integração com o chat e as tools, catálogo dos 17 agentes, prompt de handoff, modo Computer e cartão agêntico, telas, além de uma proposta de implementação (SQL, worker, tool `createAgent`) |
-| `widgets/` | Especificação widget a widget para réplica idêntica (cores, fontes, layout em px, lógica, logos). Prontos: base (`00`), carteira/saldo/fluxo (`01`), gastos (`02`), limite/parcelas/cartões/transações (`03`), assinaturas (`04`). **Faltam**: CDB/Leo/IA e home do cartão. Status e como retomar em `widgets/README.md` |
+| `widgets/` | Especificação widget a widget para réplica idêntica (cores, fontes, layout em px, lógica, logos). Prontos: base (`00`), carteira/saldo/fluxo (`01`), gastos (`02`), limite/parcelas/cartões/transações (`03`), assinaturas (`04`), CDB (`05a`), Leo/IA (`05b`). **Falta**: home do cartão. Status e como retomar em `widgets/README.md` |
 | `_trabalho/` | Fora do git. `out.js` decompilado, `strings.json` e extrações parciais por grupo de widgets |
 | `logos/` | Logos extraídas do APK: bancos (50 SVG e 46 PNG), 151 merchants da fatura (PNG), bandeiras de cartão e `mapeamento.json` (palavra-chave → logo). Veja `logos/README.md` |
 | `Pierre.apk` | APK original (214 MB). **Fica fora do git**: passa do limite de 100 MB do GitHub e é binário de terceiros |

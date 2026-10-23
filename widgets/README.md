@@ -2,9 +2,9 @@
 
 O objetivo é documentar cada widget da home "Vision" e da home do cartão com detalhe suficiente para replicá-los de forma idêntica em outro projeto React Native: cores, tipografia, layout em px, lógica de dados, logos, animações e textos. A análise é estática, feita sobre o bundle Hermes decompilado. Nos documentos, **[O]** marca o que foi observado no código (com a linha `Lnnnn` do `out.js`) e **[I]** o que foi inferido.
 
-## Status (atualizado em 21/10/2026)
+## Status (atualizado em 23/10/2026)
 
-**Próximo passo:** grupo 5 (CDB, Leo e IA). Depois, o grupo 6.
+**Próximo passo:** grupo 6 (home do cartão).
 
 | # | Arquivo | Widgets | Status |
 |---|---|---|---|
@@ -13,7 +13,8 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
 | 2 | `02-gastos.md` | `monthly-spending` (gráficos nativos Kotlin `PierreCharts`: área, barras, bloquinhos, comparação), `spending-by-category` (barra segmentada, toggle Categorias/Grupos) | ✅ Completo |
 | 3 | `03-limite-parcelas-cartoes-transacoes.md` | `available-limit`, `installments`, `cards`, `patrimony`, `recent-transactions`, `VisionTransactionRow` e a lógica de logo (`MerchantAvatar` + selo do banco) | ✅ Completo |
 | 4 | `04-assinaturas.md` | `subscriptions`: widget, tela de detalhe (a do screenshot), calendário Mensal/Diária, tela do dia, adicionar assinatura | ✅ Completo |
-| 5 | — | `cdb-investment`, `cdb-performance`, `cdb-position`, `leo-agent`, `leo-insight`, widgets de IA (`ai-<uuid>`) | ⏳ Não iniciado (1 tentativa interrompida sem gravar nada) |
+| 5a | `05a-cdb.md` | `cdb-investment` (wide, gráfico gifted-charts), `cdb-performance` (half/wide, retirado do picker), `cdb-position` (half/full, `PierreAreaChart`) | ✅ Completo |
+| 5b | `05b-leo-ia.md` | `leo-agent`, `leo-insight`, widgets de IA (`ai-<uuid>`): `AIVisionWidget`, criação pelo `WidgetChat`, `AIWidgetRenderer` (previews e home do cartão) | ✅ Completo |
 | 6 | — | Home do cartão (`WIDGET_REGISTRY`): Cashback, Fatura, Cartão, Gastos por categoria, carrossel | ⏳ Não iniciado |
 
 ## Principais achados até aqui
@@ -37,6 +38,9 @@ O objetivo é documentar cada widget da home "Vision" e da home do cartão com d
   - Escolha da logo (`MerchantAvatar`): logo local por palavra-chave → URL `/api/logo?domain=` → ícone da categoria → inicial.
   - Selo do banco: caixa de 30 px em −5/−5 com logo de 22 px.
   - Para casar as palavras-chave do `logos/mapeamento.json`, teste da mais longa para a mais curta.
+- **CDB:** visível via flag `cdbInvestmentsEnabled` de `/api/mobile/config` (`internalOnly` → só e-mails `@cloudwalk.io`). Só `cdb-investment` usa o endpoint da Vision (servidor manda `headline`, `subtitle`, `cohort`, `series`); `cdb-performance` e `cdb-position` leem `/api/cdb/*` e calculam no app, só com KYC aprovado. Nenhum usa `Widget2x2`/`WidgetWide`/`WidgetFull`.
+- **Leo:** `leo-agent` (half) é estático e abre o chat; `leo-insight` (wide, altura pelo conteúdo, mín. 160) mostra o último relatório do agente via `/api/agents/{id}/logs`.
+- **Widgets de IA:** na Vision, `AIVisionWidget` só desenha `items`/`accounts` como até 3 barras, com dados de `GET /api/mobile/vision/widgets/{id}/ai-data` (refresh 3 h, cache antes da rede); sem estado de erro e sem navegação. Criação no `WidgetChat` (`/api/mobile/vision/widgets/chat`, tools `suggest_widgets`, `show_chart_options`, `generate_preview`) e `POST /api/mobile/vision/widgets`.
 
 ## Material de trabalho (fora do git)
 Fica em `_trabalho/`, ignorada pelo `.gitignore`:
@@ -47,7 +51,7 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
   - `catmap.txt`: categoria → cor/ícone, em cp1252;
   - `w3.js`: widgets do grupo 3;
   - `w4_screen.js`, `w4_cal.js` e `w4_widget.js`: assinaturas;
-  - `w5/` e `w5_*.txt`: CDB, Leo e IA;
+  - `w5/` e `w5_*.txt`: CDB, Leo e IA (entregues como `_trabalho/w5a-cdb.md` e `w5b-leo-ia.md`);
   - `w6/` e `w6b/`: home do cartão, com índice de módulos `mods.json`;
   - `w0tools/venv`: hermes-dec, para desmontar funções.
 
@@ -58,7 +62,8 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
    - os intermediários do grupo em `_trabalho/parcial/`;
    - a instrução de gravar cada seção assim que terminá-la (as sessões caíram várias vezes).
 3. Ordem sugerida:
-   - grupos 5 e 6, nesta ordem.
+   - grupo 6. `AIWidgetRenderer` e `LiveWidgetRenderer` já foram mapeados em `05b-leo-ia.md`: reaproveite.
+   - Atenção: o `BRIEF.md` cita a raiz `C:/REA/Pierre/`; a raiz atual é `C:/REA/Pierre---Reverse-Engineer/`.
 4. Pontos de partida (linhas do `out.js`):
    - **Grupo 2:** `VisionMonthlySpendingWidget` L2843453–2850970, `SpendingByCategoryWidgetConnected` L2862447, `WidgetModeToggle` L2863541, `VisionSpendingByCategoryWidget` L2864048.
    - **Grupo 3:**
@@ -91,3 +96,14 @@ Fica em `_trabalho/`, ignorada pelo `.gitignore`:
   - `SKINS.PIERRE_ONE_DEFAULT` e `mergePierreCardIntoWalletWidget`, não lidos;
   - a animação nativa do `PierreDonutChart`;
   - "Conectar conta" sem `onPress`.
+- **Grupo 5a (CDB):**
+  - como `onWidgetTap` combina `{id, from}` com o `navigateTo`;
+  - se o `cdb-investment` no Android usa o destino dinâmico (`amount`/`offer`/`entry`) ou só a rota fixa;
+  - textos reais do servidor e outros valores de `cohort` além de `simulated`;
+  - altura 132 e padding 24 do gráfico do `cdb-investment` (inferidos).
+- **Grupo 5b (Leo/IA):**
+  - nenhum ponto do app navega para `vision/widget-chat`;
+  - prompts das tools e formato do `config` ficam no servidor;
+  - widget de IA criado como cripto ou área vira lista de barras na Vision (não validado em aparelho);
+  - cor da bolha usuário × IA no chat; sentido do filtro de cripto nas sugestões;
+  - botão "Conversar" do Leo provavelmente invisível no Android (mesmo fundo do card).
